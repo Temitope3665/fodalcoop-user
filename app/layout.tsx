@@ -10,7 +10,7 @@ const fontSans = FontSans({
   variable: '--font-sans',
 });
 export const metadata: Metadata = {
-  title: 'Cooperative Management Software | Admin Log in',
+  title: 'Cooperative Management Software | User Log in',
   // description: 'Coope',
 };
 
