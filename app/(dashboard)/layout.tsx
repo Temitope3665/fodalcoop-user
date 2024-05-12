@@ -14,7 +14,7 @@ export default function DashboardLayout({
         <div className="border-r border-r-[#F5F5F5] bg-white py-4 w-[18%]">
           <SidebarNav />
         </div>
-        <div className="col-span-10 w-[82%] h-[94vh] overflow-y-auto">
+        <div className="col-span-10 w-[82%] h-[90vh] overflow-y-auto">
           {children}
         </div>
       </div>
