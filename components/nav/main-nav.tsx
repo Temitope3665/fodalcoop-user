@@ -10,7 +10,7 @@ import { Info, LogOut, Settings } from 'lucide-react';
 
 export default function MainNav() {
   return (
-    <header className="flex justify-between py-4 border-b border-b-[#eeeded] px-8 bg-white">
+    <header className="flex justify-between py-4 border-b border-b-[#eeeded] px-8 bg-white fixed w-full z-10">
       <h1 className="text-pr font-semibold">Foodal</h1>
       <div className="flex space-x-8 font-light text-sm text-[#444444] items-center">
         <div className="relative" role="button">

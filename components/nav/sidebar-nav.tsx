@@ -9,9 +9,9 @@ import { SidebarNavItem } from '@/types';
 
 export default function SidebarNav() {
   return (
-    <div className="flex h-full max-h-screen flex-col gap-5">
+    <div className="flex h-full max-h-screen flex-col gap-5 fixed w-[18%]">
       <div className="flex-1">
-        <nav className="grid items-start px-2 text-sm font-medium lg:px-4 space-y-2">
+        <nav className="items-start px-2 text-sm font-medium lg:px-4 space-y-2">
           {dashboardConfig.sidebarNav.map((item, idx) => (
             <React.Fragment key={idx}>
               <MenuItem item={item} />

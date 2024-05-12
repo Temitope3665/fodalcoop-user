@@ -7,6 +7,7 @@ import {
   VotingIcon,
 } from '@/assets/svgs';
 import { DashboardConfig } from '@/types';
+import React, { ReactNode } from 'react';
 
 export const dashboardConfig: DashboardConfig = {
   mainNav: [
