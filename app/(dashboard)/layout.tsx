@@ -1,5 +1,5 @@
-import SidebarNav from '@/components/nav/sidebar-nav';
 import MainNav from '@/components/nav/main-nav';
+import SidebarNav from '@/components/nav/sidebar-nav';
 
 export default function DashboardLayout({
   children,
@@ -7,15 +7,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-muted/40 md:block">
-        <SidebarNav />
-      </div>
-      <div className="flex flex-col">
-        <MainNav />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {children}
-        </main>
+    <div className="min-h-screen w-full bg-[#FAFAFA]">
+      <MainNav />
+
+      <div className="grid grid-cols-12 w-full min-h-[95vh]">
+        <div className="col-span-2 border-r border-r-[#F5F5F5] bg-white py-4">
+          <SidebarNav />
+        </div>
+        <div className="col-span-10">{children}</div>
       </div>
     </div>
   );

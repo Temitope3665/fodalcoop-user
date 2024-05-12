@@ -18,26 +18,29 @@ import {
 } from '@/components/ui/form';
 
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-import { ONBOARDING_STEP_ONE_URL, RESET_PASSWORD_URL } from '@/config/paths';
+import { ONBOARDING_STEP_TWO_URL } from '@/config/paths';
 import { Eye, EyeOff } from 'lucide-react';
 import InputAdornment from '@/components/ui/input-adornment';
 import { wait } from '@/lib/utils';
 
 export const formSchema = z.object({
+  firstName: z.string().min(1, { message: 'First name is required' }),
+  lastName: z.string().min(1, { message: 'Email is required' }),
   email: z.string().min(1, { message: 'Email is required' }).email({
     message: 'Invalid email format',
   }),
   password: z.string().min(1, { message: 'Password is required' }),
 });
 
-export default function UserAuthForm() {
+export default function StepOneForm() {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
     },
@@ -51,7 +54,7 @@ export default function UserAuthForm() {
   function onSubmit() {
     setIsPending(true);
     wait().then(() => {
-      router.push(ONBOARDING_STEP_ONE_URL);
+      router.push(ONBOARDING_STEP_TWO_URL);
       setIsPending(false);
     });
   }
@@ -59,6 +62,42 @@ export default function UserAuthForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
+        <FormField
+          control={form.control}
+          name="firstName"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormLabel>First name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Your first name"
+                  type="text"
+                  invalid={fieldState.invalid}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field, fieldState }) => (
+            <FormItem>
+              <FormLabel>Last name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Your last name"
+                  type="text"
+                  invalid={fieldState.invalid}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="email"
@@ -110,17 +149,11 @@ export default function UserAuthForm() {
           size="lg"
           pending={isPending}
           pendingText="Please wait"
-          className="lg:w-[40%] w-full"
+          className="w-full"
         >
-          Login
+          Next
         </Button>
       </form>
-      <Link
-        className="inline-block text-sm mt-3 text-primary"
-        href={RESET_PASSWORD_URL}
-      >
-        Forgot password?
-      </Link>
     </Form>
   );
 }

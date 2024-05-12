@@ -15,7 +15,7 @@ export type SidebarNavItem = {
   title: string;
   href: string;
   submenu?: boolean;
-  icon?: keyof typeof Icons;
+  icon: React.ReactNode;
   subMenuItems?: SidebarNavItem[];
 };
 
