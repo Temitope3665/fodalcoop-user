@@ -1,6 +1,7 @@
 import { DashboardCard, cardData } from '@/components/dashboard-card';
 import AreaChartComponent from '@/components/ui/area-chart-component';
-import { dataA, dataB } from './data';
+import { dataA, dataB, guarantorRequests } from './data';
+import GuarantorRequestCard from '@/components/guarantor-request-card';
 
 export default function Dashboard() {
   return (
@@ -19,7 +20,16 @@ export default function Dashboard() {
           <AreaChartComponent type="B" data={dataB} />
         </div>
       </div>
-      <div></div>
+      <div className="space-y-4">
+        <h1 className="text-defalt font-semibold text-[14px]">
+          Guarantor requests
+        </h1>
+        <div className="grid lg:grid-cols-3 w-full gap-4">
+          {guarantorRequests.map((card) => (
+            <GuarantorRequestCard key={card.name} data={card} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

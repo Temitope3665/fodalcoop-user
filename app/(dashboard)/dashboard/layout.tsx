@@ -9,16 +9,16 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="grid grid-cols-9 h-full">
-      <div className="col-span-7 bg-[#F8F9FD] h-full px-4 py-2 min-h-[80vh]">
+      <div className="col-span-7 bg-[#F8F9FD] h-[90vh] overflow-y-auto px-4 py-2">
         {children}
       </div>
-      <div className="col-span-2 bg-white px-4 py-2">
+      <div className="col-span-2 bg-white px-4 py-2 h-[90vh] overflow-y-auto">
         <div className="space-y-2">
           <h1 className="text-default font-semibold text-sm">Messages</h1>
           <Separator />
         </div>
-        {messages.map((message) => (
-          <React.Fragment>
+        {messages.map((message, index) => (
+          <React.Fragment key={`${message}-${index}`}>
             <div className="space-y-2 py-2">
               <div className="space-y-1">
                 <h1 className={cn('text-default font-light text-sm')}>
@@ -39,6 +39,42 @@ export default function DashboardLayout({
 }
 
 const messages: { title: string; date: string }[] = [
+  {
+    title: 'You were invited to a poll',
+    date: 'MON MAY 1, 2023',
+  },
+  {
+    title: 'Your loan request was approved',
+    date: 'MON MAY 4, 2023',
+  },
+  {
+    title: 'Your guarantor has been approved',
+    date: 'MON MAY 4, 2023',
+  },
+  {
+    title: 'You were invited to a poll',
+    date: 'MON MAY 1, 2023',
+  },
+  {
+    title: 'Your loan request was approved',
+    date: 'MON MAY 4, 2023',
+  },
+  {
+    title: 'Your guarantor has been approved',
+    date: 'MON MAY 4, 2023',
+  },
+  {
+    title: 'You were invited to a poll',
+    date: 'MON MAY 1, 2023',
+  },
+  {
+    title: 'Your loan request was approved',
+    date: 'MON MAY 4, 2023',
+  },
+  {
+    title: 'Your guarantor has been approved',
+    date: 'MON MAY 4, 2023',
+  },
   {
     title: 'You were invited to a poll',
     date: 'MON MAY 1, 2023',

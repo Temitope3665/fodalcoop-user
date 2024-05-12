@@ -51,3 +51,25 @@ export const dataB: { name: string; value: number }[] = [
     value: 70,
   },
 ];
+
+export const guarantorRequests: {
+  name: string;
+  phone: string;
+  liability: string;
+}[] = [
+  {
+    name: 'Jon Bellion',
+    phone: '0812 345 6789',
+    liability: 'N 35,000,000',
+  },
+  {
+    name: 'Jon Bellion',
+    phone: '0812 345 6789',
+    liability: 'N 35,000,000',
+  },
+  {
+    name: 'Jon Bellion',
+    phone: '0812 345 6789',
+    liability: 'N 35,000,000',
+  },
+];
