@@ -166,3 +166,31 @@ export const VotingIcon = () => (
     />
   </svg>
 );
+
+export const DeclineIcon = ({ className }: { className: string }) => (
+  <svg
+    width="72"
+    height="73"
+    viewBox="0 0 72 73"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <g clip-path="url(#clip0_769_3028)">
+      <path
+        d="M36 6.5C19.41 6.5 6 19.91 6 36.5C6 53.09 19.41 66.5 36 66.5C52.59 66.5 66 53.09 66 36.5C66 19.91 52.59 6.5 36 6.5ZM48.9 49.4C47.73 50.57 45.84 50.57 44.67 49.4L36 40.73L27.33 49.4C26.16 50.57 24.27 50.57 23.1 49.4C21.93 48.23 21.93 46.34 23.1 45.17L31.77 36.5L23.1 27.83C21.93 26.66 21.93 24.77 23.1 23.6C24.27 22.43 26.16 22.43 27.33 23.6L36 32.27L44.67 23.6C45.84 22.43 47.73 22.43 48.9 23.6C50.07 24.77 50.07 26.66 48.9 27.83L40.23 36.5L48.9 45.17C50.04 46.31 50.04 48.23 48.9 49.4Z"
+        fill="#DD2350"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_769_3028">
+        <rect
+          width="72"
+          height="72"
+          fill="white"
+          transform="translate(0 0.5)"
+        />
+      </clipPath>
+    </defs>
+  </svg>
+);

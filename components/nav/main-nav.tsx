@@ -1,3 +1,4 @@
+'use client';
 import {
   DropdownMenuTrigger,
   DropdownMenuItem,
@@ -6,11 +7,16 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { MessageIcon, UserProfileIcon } from '@/assets/svgs';
-import { Info, LogOut, Settings } from 'lucide-react';
+import { Info, LogOut, Menu, Settings, X } from 'lucide-react';
 
-export default function MainNav() {
+interface IMainNav {
+  isOpen?: boolean;
+  setIsOpen?: any;
+}
+
+export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
   return (
-    <header className="flex justify-between py-4 border-b border-b-[#eeeded] px-8 bg-white fixed w-full z-10">
+    <header className="flex justify-between py-4 border-b border-b-[#eeeded] px-8 bg-white fixed w-full z-10 top-0">
       <h1 className="text-pr font-semibold">Foodal</h1>
       <div className="flex space-x-8 font-light text-sm text-[#444444] items-center">
         <div className="relative" role="button">
@@ -41,6 +47,13 @@ export default function MainNav() {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+        <div
+          role="button"
+          onClick={() => setIsOpen((prev: boolean) => !prev)}
+          className="lg:hidden relative"
+        >
+          {isOpen ? <X /> : <Menu />}
+        </div>
       </div>
     </header>
   );

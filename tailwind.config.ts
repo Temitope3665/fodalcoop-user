@@ -25,7 +25,9 @@ const config = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        text: 'hs(var(--default))',
+        default: 'hsl(var(--default))',
+        light: 'hsl(var(--light))',
+        overlaybackground: 'hsl(var(--overlay-background))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
