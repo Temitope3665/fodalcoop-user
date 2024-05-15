@@ -1,22 +1,74 @@
-import { Input } from '@/components/ui/input';
+// import { Input } from '@/components/ui/input';
+// import { cn } from '@/lib/utils';
+
+// export interface SearchInputProps
+//   extends React.InputHTMLAttributes<HTMLInputElement> {
+//   inputClassName?: string;
+// }
+
+// export function SearchInput({ inputClassName, ...props }: SearchInputProps) {
+//   return (
+//     <div className="relative">
+//       <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+//       <Input
+//         className={cn(
+//           'w-full appearance-none bg-background pl-12 shadow-none md:w-2/3 lg:w-1/3',
+//           inputClassName
+//         )}
+//         type="search"
+//         {...props}
+//       />
+//     </div>
+//   );
+// }
+
+'use client';
+
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
+import { Input } from './input';
 import { cn } from '@/lib/utils';
 
-export interface SearchInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  inputClassName?: string;
-}
+export default function SearchInput({
+  placeholder,
+  classNames,
+  queryKey,
+}: {
+  placeholder: string;
+  classNames?: string;
+  queryKey?: string;
+}) {
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+  const pathname = usePathname();
 
-export function SearchInput({ inputClassName, ...props }: SearchInputProps) {
+  const handleSearch = useDebouncedCallback((term) => {
+    console.log(`Searching... ${term}`);
+
+    const params = new URLSearchParams(searchParams);
+
+    if (term) {
+      params.set(queryKey || 'search', term);
+    } else {
+      params.delete(queryKey || 'search');
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
+
   return (
-    <div className="relative">
-      <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+    <div className="relative flex flex-1 flex-shrink-0">
+      <SearchIcon className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
       <Input
         className={cn(
-          'w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3',
-          inputClassName
+          'peer block w-full rounded-md border pl-8 border-gray-200 h-10 text-sm outline-2 placeholder:text-gray-500',
+          classNames
         )}
+        placeholder={placeholder}
         type="search"
-        {...props}
+        onChange={(e) => {
+          handleSearch(e.target.value);
+        }}
+        defaultValue={searchParams.get(queryKey || 'search')?.toString()}
       />
     </div>
   );
