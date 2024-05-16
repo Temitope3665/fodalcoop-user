@@ -1,3 +1,5 @@
+import { SVGProps } from 'react';
+
 export const UserProfileIcon = () => (
   <svg
     width="20"
@@ -230,6 +232,87 @@ export const ActionIcon = () => (
     <defs>
       <clipPath id="clip0_128_63">
         <rect width="16" height="16" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const DeleteIcon = (props: any) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g clip-path="url(#clip0_347_512)">
+      <path
+        d="M3.99967 12.6667C3.99967 13.4 4.59967 14 5.33301 14H10.6663C11.3997 14 11.9997 13.4 11.9997 12.6667V6C11.9997 5.26667 11.3997 4.66667 10.6663 4.66667H5.33301C4.59967 4.66667 3.99967 5.26667 3.99967 6V12.6667ZM11.9997 2.66667H10.333L9.85967 2.19333C9.73967 2.07333 9.56634 2 9.39301 2H6.60634C6.43301 2 6.25967 2.07333 6.13967 2.19333L5.66634 2.66667H3.99967C3.63301 2.66667 3.33301 2.96667 3.33301 3.33333C3.33301 3.7 3.63301 4 3.99967 4H11.9997C12.3663 4 12.6663 3.7 12.6663 3.33333C12.6663 2.96667 12.3663 2.66667 11.9997 2.66667Z"
+        fill="#CCCCCC"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_347_512">
+        <rect width="16" height="16" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const CashDepositIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
+  <svg
+    width="24"
+    height="25"
+    viewBox="0 0 24 25"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g clip-path="url(#clip0_142_1257)">
+      <path
+        d="M23 8.5V18.5C23 19.6 22.1 20.5 21 20.5H5C4.45 20.5 4 20.05 4 19.5C4 18.95 4.45 18.5 5 18.5H21V8.5C21 7.95 21.45 7.5 22 7.5C22.55 7.5 23 7.95 23 8.5ZM4 16.5C2.34 16.5 1 15.16 1 13.5V7.5C1 5.84 2.34 4.5 4 4.5H16C17.66 4.5 19 5.84 19 7.5V14.5C19 15.6 18.1 16.5 17 16.5H4ZM7 10.5C7 12.16 8.34 13.5 10 13.5C11.66 13.5 13 12.16 13 10.5C13 8.84 11.66 7.5 10 7.5C8.34 7.5 7 8.84 7 10.5Z"
+        fill="#334DAA"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_142_1257">
+        <rect
+          width="24"
+          height="24"
+          fill="white"
+          transform="translate(0 0.5)"
+        />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const TransferDepositIcon: React.FC<SVGProps<SVGSVGElement>> = (
+  props
+) => (
+  <svg
+    width="24"
+    height="25"
+    viewBox="0 0 24 25"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g clip-path="url(#clip0_142_1278)">
+      <path
+        d="M20 4.5H4C2.89 4.5 2.01 5.39 2.01 6.5L2 18.5C2 19.61 2.89 20.5 4 20.5H20C21.11 20.5 22 19.61 22 18.5V6.5C22 5.39 21.11 4.5 20 4.5ZM19 18.5H5C4.45 18.5 4 18.05 4 17.5V12.5H20V17.5C20 18.05 19.55 18.5 19 18.5ZM20 8.5H4V6.5H20V8.5Z"
+        fill="#334DAA"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_142_1278">
+        <rect
+          width="24"
+          height="24"
+          fill="white"
+          transform="translate(0 0.5)"
+        />
       </clipPath>
     </defs>
   </svg>

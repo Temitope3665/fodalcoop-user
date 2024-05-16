@@ -7,24 +7,51 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import SearchInput from './ui/search-input';
 import DataTable from './ui/data-table';
-import { columns } from '@/app/(dashboard)/loans/column/loan-column';
-import { loanData } from '@/app/(dashboard)/loans/data';
-import { ILoanData, IRepaymentData } from '@/types';
+import { ILoanData, IRepaymentData, IStandardSavingsData } from '@/types';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import React, { ReactNode, useState } from 'react';
+import LoanRequestForm from './forms/loans/loan-request-form';
+import GuarantorForm from './forms/loans/guarantor-form';
+import ReviewForm from './forms/loans/review-form';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './ui/alert-dialog';
+import SavingsDepositForm from './forms/savings-deposit-form';
 
 interface ITableTabs {
   currentTab: string;
   tabs: {
     value: string;
     title: string;
-    data: ILoanData[] | IRepaymentData[];
+    data: IStandardSavingsData[] | IRepaymentData[];
     columns: any;
   }[];
 }
 
-export const TableTabs = ({ currentTab, tabs }: ITableTabs) => {
+interface EachLoanRequestView {
+  1: ReactNode;
+  2: ReactNode;
+  3: ReactNode;
+}
+
+export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams();
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [currentFormView, setCurrentFormView] = useState<number>(1);
 
   const handleFilter = useDebouncedCallback((tab: string) => {
     const params = new URLSearchParams(searchParams);
@@ -37,6 +64,22 @@ export const TableTabs = ({ currentTab, tabs }: ITableTabs) => {
     replace(`${pathname}?${params.toString()}`);
   }, 200);
 
+  const eachView: any = {
+    1: (
+      <LoanRequestForm
+        setOpen={setOpen}
+        setCurrentFormView={setCurrentFormView}
+      />
+    ),
+    2: (
+      <GuarantorForm
+        setOpen={setOpen}
+        setCurrentFormView={setCurrentFormView}
+      />
+    ),
+    3: <ReviewForm setCurrentFormView={setCurrentFormView} />,
+  };
+
   return (
     <Tabs
       defaultValue={currentTab}
@@ -44,7 +87,7 @@ export const TableTabs = ({ currentTab, tabs }: ITableTabs) => {
       value={currentTab}
       onValueChange={(value) => handleFilter(value)}
     >
-      <div className="flex justify-between border-b pb-2 items-center pr-4">
+      <div className="lg:flex justify-between border-b pb-2 items-center pr-4">
         <TabsList className=" bg-white">
           {tabs.map((tab) => (
             <TabsTrigger
@@ -69,9 +112,24 @@ export const TableTabs = ({ currentTab, tabs }: ITableTabs) => {
             </TabsTrigger>
           ))}
         </TabsList>
-        <Button className="space-x-2">
-          <p>New loan request</p> <ArrowRightIcon />
-        </Button>
+
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button className="space-x-2 lg:flex hidden">
+              <p>New saving deposit</p> <ArrowRightIcon />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="-space-y-1">
+                <h1>Savings deposit</h1>
+              </AlertDialogTitle>
+              <AlertDialogDescription className="pt-4 px-2 text-left">
+                <SavingsDepositForm setOpen={setOpen} />
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <>
         {tabs.map((tab) => (
@@ -116,4 +174,4 @@ export const TableTabs = ({ currentTab, tabs }: ITableTabs) => {
   );
 };
 
-export default TableTabs;
+export default SavingTableTabs;

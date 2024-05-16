@@ -35,6 +35,17 @@ export type ILoanData = {
   date: string;
 };
 
+export type IStandardSavingsData = {
+  transactionID: string;
+  amount: string;
+  month: string;
+  source: string;
+  oldBalance: string;
+  newBalance: string;
+  status: string;
+  date: string;
+};
+
 export type IRepaymentData = {
   loanID: string;
   amount: string;
