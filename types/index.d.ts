@@ -46,6 +46,14 @@ export type IStandardSavingsData = {
   date: string;
 };
 
+export type IGuarantorData = {
+  sender: string;
+  liability: string;
+  phone: string;
+  status: string;
+  date: string;
+};
+
 export type IRepaymentData = {
   loanID: string;
   amount: string;

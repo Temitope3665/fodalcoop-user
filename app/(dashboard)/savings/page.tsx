@@ -5,7 +5,7 @@ import TableTabs from '@/components/loan-table-tabs';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon } from '@/assets/svgs';
 import { tabs } from './data';
-import SavingTableTabs from '@/components/saving-deposit';
+import SavingTableTabs from '@/components/saving-deposit-tabs';
 
 export default function Savings() {
   const searchParams = useSearchParams();

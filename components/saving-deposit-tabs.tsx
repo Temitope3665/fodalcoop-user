@@ -64,22 +64,6 @@ export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
     replace(`${pathname}?${params.toString()}`);
   }, 200);
 
-  const eachView: any = {
-    1: (
-      <LoanRequestForm
-        setOpen={setOpen}
-        setCurrentFormView={setCurrentFormView}
-      />
-    ),
-    2: (
-      <GuarantorForm
-        setOpen={setOpen}
-        setCurrentFormView={setCurrentFormView}
-      />
-    ),
-    3: <ReviewForm setCurrentFormView={setCurrentFormView} />,
-  };
-
   return (
     <Tabs
       defaultValue={currentTab}
