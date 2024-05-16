@@ -15,3 +15,11 @@ export const range = (start: number, end: number) => {
 
   return Array.from({ length }, (_, idx) => idx + start);
 };
+
+export function formatStringWithCommas(numberString: string) {
+  const number = parseFloat(numberString);
+  if (isNaN(number)) {
+    console.error('Invalid number string');
+  }
+  return number.toLocaleString();
+}

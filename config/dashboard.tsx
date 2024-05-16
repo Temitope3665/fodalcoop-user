@@ -8,6 +8,14 @@ import {
 } from '@/assets/svgs';
 import { DashboardConfig } from '@/types';
 import React, { ReactNode } from 'react';
+import {
+  DASHBOARD_HOME_URL,
+  GUARANTOR_URL,
+  LOANS_URL,
+  MARKET_URL,
+  SAVINGS_URL,
+  VOTING_URL,
+} from './paths';
 
 export const dashboardConfig: DashboardConfig = {
   mainNav: [
@@ -24,32 +32,32 @@ export const dashboardConfig: DashboardConfig = {
   sidebarNav: [
     {
       title: 'Dashboard',
-      href: '/dashboard',
+      href: DASHBOARD_HOME_URL,
       icon: <DashboardIcon />,
     },
     {
       title: 'Loans',
-      href: '/loans',
+      href: LOANS_URL,
       icon: <LoanIcon />,
     },
     {
       title: 'Savings',
-      href: '/savings',
+      href: SAVINGS_URL,
       icon: <SavingsIcon />,
     },
     {
       title: 'Guarantors',
-      href: '/guarantors',
+      href: GUARANTOR_URL,
       icon: <GuarantorIcon />,
     },
     {
       title: 'Marketplace',
-      href: '/market-place',
+      href: MARKET_URL,
       icon: <MarketPlaceIcon />,
     },
     {
       title: 'Voting',
-      href: '/voting',
+      href: VOTING_URL,
       icon: <VotingIcon />,
     },
   ],

@@ -12,3 +12,11 @@ export const ONBOARDING_REVIEW_URL: string = '/onboarding/review';
 
 // Dashboard
 export const DASHBOARD_HOME_URL: string = '/dashboard';
+export const LOANS_URL: string = '/loans';
+export const SAVINGS_URL: string = '/savings';
+export const MARKET_URL: string = '/market-place';
+export const GUARANTOR_URL: string = '/guarantors';
+export const VOTING_URL: string = '/voting';
+
+// Carts
+export const CARTS_URL: string = '/market-place/carts';

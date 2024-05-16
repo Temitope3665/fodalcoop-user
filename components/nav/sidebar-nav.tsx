@@ -21,9 +21,9 @@ export default function SidebarNav({ setOpen }: ISidebarNav) {
         </div>
         <nav className="items-start px-2 text-sm font-medium lg:px-4 space-y-2 pt-8 lg:pt-0">
           {dashboardConfig.sidebarNav.map((item, idx) => (
-            <React.Fragment key={idx}>
+            <div key={idx}>
               <MenuItem item={item} />
-            </React.Fragment>
+            </div>
           ))}
         </nav>
       </div>
