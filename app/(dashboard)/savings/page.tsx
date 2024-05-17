@@ -1,7 +1,6 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
-import TableTabs from '@/components/loan-table-tabs';
 import { Button } from '@/components/ui/button';
 import { ArrowRightIcon } from '@/assets/svgs';
 import { tabs } from './data';

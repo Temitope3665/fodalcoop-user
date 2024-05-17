@@ -27,7 +27,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { ONBOARDING_STEP_ONE_URL } from '@/config/paths';
 import { cn, wait } from '@/lib/utils';
 import { loanType } from '@/config/loan-config';
 import { Textarea } from '../ui/textarea';

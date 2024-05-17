@@ -26,7 +26,7 @@ const PaymentMethodSelection = ({ totalCart }: IPaymentMethodSelection) => {
     component: ReactNode;
   }>(paymentMethod(totalCart)[0]);
   return (
-    <div className="col-span-6 bg-white rounded-lg space-y-4 p-4 h-fit max-h-[90vh] overflow-y-auto">
+    <div className="col-span-6 bg-white border rounded-lg space-y-4 p-4 h-fit max-h-[90vh] overflow-y-auto">
       <h1 className="text-sm font-semibold">Select payment method</h1>
       <div className="grid grid-cols-3 gap-4 text-[#334DAA80]">
         {paymentMethod(totalCart).map((payment) => (
