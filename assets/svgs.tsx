@@ -344,3 +344,26 @@ export const PayWithLoanIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
     </defs>
   </svg>
 );
+
+export const CreditCardIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g clip-path="url(#clip0_465_1032)">
+      <path
+        d="M13.3335 2.66699H2.66683C1.92683 2.66699 1.34016 3.26033 1.34016 4.00033L1.3335 12.0003C1.3335 12.7403 1.92683 13.3337 2.66683 13.3337H13.3335C14.0735 13.3337 14.6668 12.7403 14.6668 12.0003V4.00033C14.6668 3.26033 14.0735 2.66699 13.3335 2.66699ZM12.6668 12.0003H3.3335C2.96683 12.0003 2.66683 11.7003 2.66683 11.3337V8.00033H13.3335V11.3337C13.3335 11.7003 13.0335 12.0003 12.6668 12.0003ZM13.3335 5.33366H2.66683V4.00033H13.3335V5.33366Z"
+        fill="#334DAA"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_465_1032">
+        <rect width="16" height="16" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);

@@ -33,3 +33,5 @@ export const loanType: {
     repaymentModel: [{ model: 'Standard' }, { model: 'Self-determined' }],
   },
 ];
+
+export const duration = ['6 months', '12 months'];

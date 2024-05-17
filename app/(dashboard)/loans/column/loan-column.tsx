@@ -2,7 +2,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 import { Eye, Trash2 } from 'lucide-react';
 import { ReactNode, useState } from 'react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 import {
   Dialog,
