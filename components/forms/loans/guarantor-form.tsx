@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
 
 import * as z from 'zod';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -19,7 +18,7 @@ import {
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { DeleteIcon } from '@/assets/svgs';
 import { wait } from '@/lib/utils';
 
@@ -49,7 +48,6 @@ const formSchema = z.object({
 });
 
 export default function GuarantorForm({
-  setOpen,
   setCurrentFormView,
 }: {
   setOpen: (arg: boolean) => void;

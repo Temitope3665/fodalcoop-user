@@ -59,7 +59,7 @@ const Carts = () => {
   console.log(totalCart, '->');
 
   return (
-    <div className="grid lg:grid-cols-12 gap-8 px-12 py-6">
+    <div className="grid lg:grid-cols-12 gap-8 px-4 lg:px-12 py-6">
       <div className="col-span-6 border rounded-lg p-4 bg-white space-y-4 h-fit max-h-[82vh]">
         <h1 role="heading" className="text-default font-bold text-sm">
           Checkout

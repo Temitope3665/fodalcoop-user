@@ -56,10 +56,10 @@ const PaymentMethodSelection = ({ totalCart }: IPaymentMethodSelection) => {
       {selectedMethod.component}
 
       <div className="space-x-4">
-        <Button variant="outline" className="font-light w-[38%]">
+        <Button variant="outline" className="font-light lg:w-[38%] w-[40%]">
           Cancel
         </Button>
-        <Button className="font-light w-[58%]">
+        <Button className="font-light lg:w-[58%] w-[50%]">
           Pay NGN {formatStringWithCommas(totalCart.toString())}.00
         </Button>
       </div>

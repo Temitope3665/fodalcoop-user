@@ -20,3 +20,9 @@ export const VOTING_URL: string = '/voting';
 
 // Carts
 export const CARTS_URL: string = '/market-place/carts';
+
+// Settings
+export const SETTINGS_URL: string = '/settings';
+
+// Supports
+export const SUPPORT_URL: string = '/support';

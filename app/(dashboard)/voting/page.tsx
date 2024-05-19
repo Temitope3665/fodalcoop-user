@@ -37,12 +37,12 @@ export default function Voting() {
   return (
     <div className="px-4 py-2 space-y-8">
       <h1 className="text-default font-semibold text-sm">Voting</h1>
-      <div className="flex justify-between items-center">
-        <div className="flex space-x-2">
+      <div className="lg:flex space-y-4 lg:space-y-0 justify-between items-center">
+        <div className="flex space-x-2 w-[100%] overflow-x-auto">
           {voteLists.map((each) => (
             <div
               className={cn(
-                'bg-white py-2 trans border px-4 font-light text-xs rounded-[4px]',
+                'bg-white py-2 trans border px-4 font-light text-xs rounded-[4px] flex items-center',
                 each === voteLists[0] && 'bg-primary text-white'
               )}
               style={{ boxShadow: '0px 2px 10px 0px #2F4A891A' }}
@@ -52,12 +52,12 @@ export default function Voting() {
             </div>
           ))}
         </div>
-        <div className="w-[25%]">
+        <div className="lg:w-[25%] w-full">
           <SearchInput placeholder="Search" />
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 p-4">
+      <div className="grid lg:grid-cols-2 gap-4 p-4">
         <div className="p-4 space-y-2 bg-white rounded-lg border overflow-y-auto h-fit max-h-[70vh]">
           <div className="text-[13px]">
             <h1 className="font-semibold">Vote for your preferred candidate</h1>
@@ -155,7 +155,7 @@ export default function Voting() {
               These are the candidates you have selected.
             </p>
           </div>
-          <div className="grid grid-cols-4 gap-4 px-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4">
             {names.map((name, index) => (
               <div
                 key={`${name}-${index}`}
@@ -181,12 +181,14 @@ export default function Voting() {
             <Label className="font-light text-sm">
               Enter accreditation here
             </Label>
-            <div className="flex space-x-2">
+            <div className="lg:flex lg:space-x-2 space-y-2 lg:space-y-0">
               <Input
                 placeholder="Enter accreditation number"
-                className="w-[45%]"
+                className="lg:w-[45%] w-full"
               />
-              <Button className="h-12 font-light w-[55%]">Cast vote</Button>
+              <Button className="h-12 font-light lg:w-[55%] w-full">
+                Cast vote
+              </Button>
             </div>
           </div>
         </div>

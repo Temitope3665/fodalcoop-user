@@ -127,7 +127,7 @@ export const SavingsIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
 export const GuarantorIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
   <svg
     width="16"
-    height="20"
+    height="16"
     viewBox="0 0 16 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -365,5 +365,22 @@ export const CreditCardIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
         <rect width="16" height="16" fill="white" />
       </clipPath>
     </defs>
+  </svg>
+);
+
+export const UploadFileIcon: React.FC<SVGProps<SVGSVGElement>> = (props) => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect width="32" height="32" rx="4" fill="#D8E3FF" />
+    <path
+      d="M20.94 12.9407L17.72 9.72065C17.4733 9.47398 17.1333 9.33398 16.78 9.33398H12C11.2666 9.33398 10.6733 9.93398 10.6733 10.6673L10.6666 21.334C10.6666 22.0673 11.26 22.6673 11.9933 22.6673H20C20.7333 22.6673 21.3333 22.0673 21.3333 21.334V13.8873C21.3333 13.534 21.1933 13.194 20.94 12.9407ZM17.8666 18.0007H16.6666V20.0007C16.6666 20.3673 16.3666 20.6673 16 20.6673C15.6333 20.6673 15.3333 20.3673 15.3333 20.0007V18.0007H14.14C13.84 18.0007 13.6933 17.6407 13.9066 17.434L15.7733 15.574C15.9066 15.4473 16.1133 15.4473 16.2466 15.574L18.1066 17.434C18.3066 17.6407 18.16 18.0007 17.8666 18.0007ZM17.3333 14.0007C16.9666 14.0007 16.6666 13.7007 16.6666 13.334V10.334L20.3333 14.0007H17.3333Z"
+      fill="#334DAA"
+    />
   </svg>
 );

@@ -9,11 +9,17 @@ import { X } from 'lucide-react';
 
 interface ISidebarNav {
   setOpen: (arg: boolean) => void;
+  open: boolean;
 }
 
-export default function SidebarNav({ setOpen }: ISidebarNav) {
+export default function SidebarNav({ setOpen, open }: ISidebarNav) {
   return (
-    <div className="flex h-full max-h-screen flex-col lg:gap-5 fixed w-[85%] bg-white lg:w-[18%] z-50">
+    <div
+      className={cn(
+        'flex h-full max-h-screen flex-col lg:gap-5 fixed w-[85%] bg-white lg:w-[18%] z-50  ease-in-out duration-300',
+        open ? '' : '-translate-x-full md:translate-x-0'
+      )}
+    >
       <div className="flex-1">
         <div className="px-6 pt-4 pb-3 border-b border-b-[#eeeded] bg-white lg:hidden flex items-center justify-between">
           <h1 className="text-pr font-semibold">Foodal</h1>

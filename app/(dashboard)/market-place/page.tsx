@@ -79,13 +79,13 @@ export default function MarketPlace() {
           </div>
         )}
       </div>
-      <div className="flex items-center justify-between">
-        <div className="flex space-x-2 w-[75%]">
+      <div className="lg:flex items-center space-y-3 lg:space-y-0 justify-between">
+        <div className="flex space-x-2 w-full lg:w-[75%] overflow-x-auto pb-4">
           {marketPlace.map((market) => (
             <div
               key={market.name}
               className={cn(
-                'font-light text-default bg-white text-[11px] py-1.5 px-3 trans rounded-sm border border-white hover:border hover:border-primary',
+                'font-light flex items-center text-default bg-white text-[11px] py-1.5 px-3 trans rounded-sm border border-white hover:border hover:border-primary',
                 selectedCategory === market && 'border-primary'
               )}
               style={{ boxShadow: '0px 2px 10px 0px #2F4A891A' }}
@@ -96,12 +96,12 @@ export default function MarketPlace() {
             </div>
           ))}
         </div>
-        <div className="w-[25%]">
+        <div className="lg:w-[25%] w-full">
           <SearchInput placeholder="Search" />
         </div>
       </div>
 
-      <div className="overflow-y-auto space-y-4 h-[78vh]">
+      <div className="overflow-y-auto space-y-4 lg:h-[78vh] h-screen">
         {selectedCategory.data?.length > 0 && (
           <div className="grid lg:grid-cols-4 gap-8">
             {selectedCategory.data?.map((each, index) => {
@@ -158,7 +158,7 @@ export default function MarketPlace() {
                 <div className="w-full mt-4  object-cover">
                   {currentSelectedItem?.image}
                 </div>
-                <div className="text-lg space-y-">
+                <div className="text-lg space-y- text-left">
                   <p className="font-bold">{currentSelectedItem?.name}</p>
                   <p className="text-sm font-light">{selectedCategory.name}</p>
                   <div className="flex justify-between items-center">

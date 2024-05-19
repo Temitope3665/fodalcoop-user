@@ -7,19 +7,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import SearchInput from './ui/search-input';
 import DataTable from './ui/data-table';
-import { ILoanData, IRepaymentData, IStandardSavingsData } from '@/types';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { IRepaymentData, IStandardSavingsData } from '@/types';
 import React, { ReactNode, useState } from 'react';
-import LoanRequestForm from './forms/loans/loan-request-form';
-import GuarantorForm from './forms/loans/guarantor-form';
-import ReviewForm from './forms/loans/review-form';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -72,7 +61,7 @@ export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       onValueChange={(value) => handleFilter(value)}
     >
       <div className="lg:flex justify-between border-b pb-2 items-center pr-4">
-        <TabsList className=" bg-white">
+        <TabsList className=" bg-white w-full overflow-x-auto capitalize">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
