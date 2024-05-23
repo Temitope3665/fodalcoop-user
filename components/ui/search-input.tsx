@@ -1,27 +1,3 @@
-// import { Input } from '@/components/ui/input';
-// import { cn } from '@/lib/utils';
-
-// export interface SearchInputProps
-//   extends React.InputHTMLAttributes<HTMLInputElement> {
-//   inputClassName?: string;
-// }
-
-// export function SearchInput({ inputClassName, ...props }: SearchInputProps) {
-//   return (
-//     <div className="relative">
-//       <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-//       <Input
-//         className={cn(
-//           'w-full appearance-none bg-background pl-12 shadow-none md:w-2/3 lg:w-1/3',
-//           inputClassName
-//         )}
-//         type="search"
-//         {...props}
-//       />
-//     </div>
-//   );
-// }
-
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
