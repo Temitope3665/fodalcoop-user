@@ -39,14 +39,13 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
           <DropdownMenuContent className="mt-2 px-2 w-[160px]">
             <DropdownMenuGroup className="space-y-1">
               {navItems.map((item) => (
-                <Link href={item.href}>
+                <Link href={item.href} key={item.title}>
                   <DropdownMenuItem
                     className={cn(
                       'px-2 py-2 text-[#444444] my-2',
                       pathname.startsWith(item.href) &&
                         'bg-accent text-accent-foreground'
                     )}
-                    key={item.title}
                   >
                     <Settings className="mr-2 h-4 w-4" />
                     <span className="text-sm font-light">{item.title}</span>

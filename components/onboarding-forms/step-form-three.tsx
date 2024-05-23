@@ -130,7 +130,6 @@ export default function StepThreeForm() {
               <FormControl>
                 <Input
                   placeholder="Full name of next of kin"
-                  type="tel"
                   invalid={fieldState.invalid}
                   {...field}
                 />

@@ -21,9 +21,8 @@ const FooterNav = () => {
       style={{ boxShadow: '0px -4px 12px 0px #334DAA0D' }}
     >
       {dashboardConfig.sidebarNav.slice(0, 4).map((item, idx) => (
-        <Link href={item.href}>
+        <Link href={item.href} key={idx}>
           <div
-            key={idx}
             className={cn(
               'text-[#55678C] border-t-2 border-t-white text-center w-full pt-4 trans pb-4 space-y-1',
               pathname.startsWith(item.href) &&

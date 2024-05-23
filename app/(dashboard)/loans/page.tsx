@@ -57,7 +57,7 @@ export default function Loans() {
                   Complete the form to make a loan request
                 </p>
               </SheetTitle>
-              <SheetDescription className="pt-4 lg:h-[89vh] overflow-y-auto px-2 h-[60vh]">
+              <SheetDescription className="pt-4 lg:h-[89vh] overflow-y-auto px-2 h-[60vh] text-left">
                 {eachView[currentFormView]}
               </SheetDescription>
             </SheetHeader>

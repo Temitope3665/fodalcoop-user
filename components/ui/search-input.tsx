@@ -43,8 +43,6 @@ export default function SearchInput({
   const pathname = usePathname();
 
   const handleSearch = useDebouncedCallback((term) => {
-    console.log(`Searching... ${term}`);
-
     const params = new URLSearchParams(searchParams);
 
     if (term) {

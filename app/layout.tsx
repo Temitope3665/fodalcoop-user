@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 
 import './globals.css';
 import { AppContextProvider } from '@/context/app-context';
+import { Suspense } from 'react';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -35,7 +36,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppContextProvider>{children}</AppContextProvider>
+          <Suspense fallback={<p>Loading...</p>}>
+            <AppContextProvider>{children}</AppContextProvider>
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

@@ -14,6 +14,14 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import SavingsDepositForm from '@/components/forms/savings-deposit-form';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 export default function Savings() {
   const searchParams = useSearchParams();
@@ -23,23 +31,23 @@ export default function Savings() {
     <div className="px-4 py-2 space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-default font-semibold text-sm">Savings</h1>
-        <AlertDialog open={open} onOpenChange={setOpen}>
-          <AlertDialogTrigger asChild>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
             <Button className="space-x-2 lg:hidden flex">
               <p>New targeted savings</p> <ArrowRightIcon />
             </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="-space-y-1">
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle className="-space-y-1">
                 <h1>Savings deposit</h1>
-              </AlertDialogTitle>
-              <AlertDialogDescription className="pt-4 px-2 text-left">
+              </SheetTitle>
+              <SheetDescription className="pt-4 px-2 text-left">
                 <SavingsDepositForm setOpen={setOpen} />
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
       </div>
       <div className="py-4 border border-light rounded-lg bg-white overflow-y-auto min-h-[800px]">
         <SavingTableTabs currentTab={currentTab} tabs={tabs} />

@@ -1,11 +1,10 @@
-import MainNav from '@/components/nav/main-nav';
 import { ReactNode } from 'react';
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="min-h-screen w-full bg-[#FAFAFA]">
-      <MainNav />
-      <div className="pt-24">
+    <div className="lg:p-10 flex items-center w-full bg-[#FAFAFA] h-screen">
+      {/* <MainNav /> */}
+      {/* <div className="pt-24">
         <div
           className="w-[90%] lg:w-[35%] mx-auto rounded-xl bg-white border"
           style={{
@@ -13,11 +12,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
             border: '1px solid rgba(245, 245, 245, 1)',
           }}
         >
-          <div className="p-4">
-            <div className="space-y-2">{children}</div>
-          </div>
-        </div>
+          <div className="p-4"> */}
+      <div className="space-y-4 w-full px-4 lg:py-0">
+        {/* <h3 className="font-semibold">FODAL COOP</h3> */}
+        {children}
       </div>
+      {/* </div>
+        </div>
+      </div> */}
     </div>
   );
 };

@@ -110,7 +110,7 @@ export default function UserAuthForm() {
           size="lg"
           pending={isPending}
           pendingText="Please wait"
-          className="lg:w-[40%] w-full"
+          className="w-full"
         >
           Login
         </Button>

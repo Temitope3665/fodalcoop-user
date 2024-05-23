@@ -34,8 +34,6 @@ export default function Settings() {
   ];
 
   const handleSwitch = useDebouncedCallback((term) => {
-    console.log(`Searching... ${term}`);
-
     const params = new URLSearchParams(searchParams);
 
     if (term) {

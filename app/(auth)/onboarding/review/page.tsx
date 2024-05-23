@@ -27,7 +27,7 @@ const ReviewOnboarding = () => {
     <div className="space-y-4">
       <div className="space-y-5">
         <h1 className="text-[20px] font-semibold">Review and Submit</h1>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="grid grid-cols-2">
             <div className="space--y-2">
               <p role="heading" className="text-[10px] text-[#888888]">

@@ -59,9 +59,7 @@ export default function MarketPlace() {
     (sum: number, item: { count: number }) => sum + item.count,
     0
   );
-  console.log(totalCart, '->totalCart');
 
-  console.log(carts, '-> cart');
   return (
     <div className="px-4 py-2 space-y-4">
       <div className="flex justify-between items-center">
@@ -109,7 +107,6 @@ export default function MarketPlace() {
                 (item: any) => item.product.id === each.id
               );
               const handleSelect = () => {
-                console.log(isSelected, '-> selected');
                 if (!isSelected) {
                   setCount(1);
                   setOpen(true);
@@ -121,7 +118,6 @@ export default function MarketPlace() {
                   setCarts(updatedItems);
                 }
               };
-              console.log(isSelected, '-> ue');
               return (
                 <div
                   key={`${each.name}-${index}`}

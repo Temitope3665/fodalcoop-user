@@ -66,8 +66,6 @@ export default function GuarantorForm({
     name: 'guarantors',
   });
 
-  console.log(form.getValues('guarantors'));
-
   const [isPending, setIsPending] = React.useState(false);
 
   function onSubmit(data: any) {
