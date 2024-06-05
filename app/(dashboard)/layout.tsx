@@ -35,7 +35,7 @@ export default function DashboardLayout({
         </div>
         <div
           className={cn(
-            'lg:col-span-10 bg-[#F8F9FD] relative lg:w-[82%] py-20 lg:pt-0 ',
+            'lg:col-span-10 bg-[#F8F9FD] relative lg:w-[82%] py-20 lg:pt-4 ',
             isOpen && 'fixed'
           )}
         >

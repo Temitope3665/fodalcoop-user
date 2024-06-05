@@ -70,7 +70,7 @@ export default function StepThreeForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-5">
         <FormField
           control={form.control}
           name="nextOfKinName"

@@ -5,14 +5,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowRightIcon } from '@/assets/svgs';
 import { tabs } from './data';
 import SavingTableTabs from '@/components/saving-deposit-tabs';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import SavingsDepositForm from '@/components/forms/savings-deposit-form';
 import {
   Sheet,

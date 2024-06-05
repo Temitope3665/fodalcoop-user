@@ -13,7 +13,7 @@ export const AppContextProvider = ({ children }: IAppProvider) => {
   useEffect(() => {
     const selectedProducts =
       typeof window !== 'undefined' && localStorage.getItem('cart');
-    const products = selectedProducts ? JSON.parse(selectedProducts) : null;
+    const products = selectedProducts ? JSON.parse(selectedProducts) : [];
     setCarts(products);
   }, []);
 

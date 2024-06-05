@@ -18,6 +18,14 @@ import {
   AlertDialogTrigger,
 } from './ui/alert-dialog';
 import SavingsDepositForm from './forms/savings-deposit-form';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 interface ITableTabs {
   currentTab: string;
@@ -61,7 +69,7 @@ export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       onValueChange={(value) => handleFilter(value)}
     >
       <div className="lg:flex justify-between border-b pb-2 items-center pr-4">
-        <TabsList className=" bg-white w-full overflow-x-auto capitalize">
+        <TabsList className=" bg-white w-full justify-start overflow-x-auto capitalize">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
@@ -86,23 +94,23 @@ export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
           ))}
         </TabsList>
 
-        <AlertDialog open={open} onOpenChange={setOpen}>
-          <AlertDialogTrigger asChild>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
             <Button className="space-x-2 lg:flex hidden">
               <p>New saving deposit</p> <ArrowRightIcon />
             </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="-space-y-1">
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle className="-space-y-1">
                 <h1>Savings deposit</h1>
-              </AlertDialogTitle>
-              <AlertDialogDescription className="pt-4 px-2 text-left">
+              </SheetTitle>
+              <SheetDescription className="pt-4 px-2 text-left">
                 <SavingsDepositForm setOpen={setOpen} />
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
       </div>
       <>
         {tabs.map((tab) => (
