@@ -21,12 +21,17 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-import { ONBOARDING_STEP_ONE_URL, RESET_PASSWORD_URL } from '@/config/paths';
+import {
+  DASHBOARD_PATH,
+  ONBOARDING_STEP_ONE_URL,
+  RESET_PASSWORD_URL,
+} from '@/config/paths';
 import { Eye, EyeOff } from 'lucide-react';
 import InputAdornment from '@/components/ui/input-adornment';
 import { useMutation } from '@tanstack/react-query';
 import { loginUser } from '@/config/apis/auth';
 import { toast } from 'sonner';
+import { storeAccess } from '@/lib/actions';
 
 export const formSchema = z.object({
   email: z.string().min(1, { message: 'Email is required' }).email({
@@ -51,7 +56,14 @@ export default function UserAuthForm() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: loginUser,
-    onSuccess: (response) => toast.success(response.message),
+    onSuccess: async (response) => {
+      await storeAccess({
+        token: response.data.token,
+        user: response.data.user,
+      });
+      toast.success(response.message);
+      router.push(DASHBOARD_PATH);
+    },
     onError: (error: any) => toast.error(error.response.data.message),
   });
 
