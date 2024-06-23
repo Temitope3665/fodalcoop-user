@@ -73,3 +73,9 @@ export type IApplicationData = {
   status: string;
   date: string;
 };
+
+export interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: any;
+}

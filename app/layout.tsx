@@ -6,6 +6,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 import { AppContextProvider } from '@/context/app-context';
 import { Suspense } from 'react';
+import { Toaster } from 'sonner';
+import TanstackProvider from '@/context/tanstack-provider';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -37,7 +39,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Suspense fallback={<p>Loading...</p>}>
-            <AppContextProvider>{children}</AppContextProvider>
+            <TanstackProvider>
+              <AppContextProvider>
+                {children}
+                <Toaster richColors duration={5000} />
+              </AppContextProvider>
+            </TanstackProvider>
           </Suspense>
         </ThemeProvider>
       </body>

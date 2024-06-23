@@ -10,7 +10,7 @@ const OnboardStepOne = () => {
         <h1 className="text-[20px] font-semibold">
           Welcome to your cooperative portal
         </h1>
-        <p className="font-light text-[13]">Update your records to proceed</p>
+        <p className="font-light text-[13]">Create your records to proceed</p>
       </div>
       <StepOneForm />
     </div>
