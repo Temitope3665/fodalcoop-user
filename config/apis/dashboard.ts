@@ -19,3 +19,8 @@ export const composeMessage = (
       },
     })
     .then((response) => response.data);
+
+export const readMessage = (messageId: string): Promise<ApiResponse> =>
+  client
+    .get(`${MESSAGE_EP}/read/${messageId}`)
+    .then((response) => response.data);

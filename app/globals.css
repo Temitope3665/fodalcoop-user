@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; 
+    --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -57,7 +57,6 @@
   transition: all 0.75s ease;
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -65,4 +64,12 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.multiline-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Number of lines you want to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

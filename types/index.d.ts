@@ -104,4 +104,5 @@ export interface IMessageResponse {
   id: number;
   replyId: string;
   file_path: string;
+  isView?: boolean;
 }

@@ -5,10 +5,10 @@ import AddMessageForm from '@/components/forms/add-message-form';
 import { MessagesLoading } from '@/components/loaders';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { getInboxMessages } from '@/config/apis/dashboard';
-import { INBOX_MESSAGES_KEY } from '@/lib/query-keys';
+import { getInboxMessages, readMessage } from '@/config/apis/dashboard';
+import { INBOX_MESSAGES_KEY, OUTBOX_MESSAGES_KEY } from '@/lib/query-keys';
 import { cn } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
@@ -17,18 +17,24 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import React, { useState } from 'react';
-import { CircleDotDashed, Plus, Reply } from 'lucide-react';
+import {
+  CircleDashed,
+  CircleDotDashed,
+  Loader2,
+  Plus,
+  Reply,
+} from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { IMessageResponse } from '@/types';
+import { toast } from 'sonner';
 
 export default function Messages() {
   const [messageType, setMessageType] = useState<string>('inbox');
 
   const { data, isLoading, isError, error } = useQuery({
     queryFn: () => getInboxMessages(messageType),
-    queryKey: [INBOX_MESSAGES_KEY, messageType],
+    queryKey: [INBOX_MESSAGES_KEY, OUTBOX_MESSAGES_KEY, messageType],
   });
-  console.log(data, 'data');
 
   if (isError) {
     return <ErrorComponent error={error} />;
@@ -59,9 +65,20 @@ export const EachMessage = ({
   data: IMessageResponse[] | undefined;
   isLoading: boolean;
 }) => {
+  const queryClient: any = useQueryClient();
   const [selectedMessage, setSelectedMessage] =
     useState<IMessageResponse | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: readMessage,
+    onSuccess: () => {
+      toast.success('Message read');
+      queryClient.invalidateQueries(INBOX_MESSAGES_KEY);
+      queryClient.invalidateQueries(OUTBOX_MESSAGES_KEY);
+    },
+    onError: (error: any) => toast.error(error.message),
+  });
 
   if (isLoading) return <MessagesLoading />;
   return (
@@ -72,13 +89,14 @@ export const EachMessage = ({
             title="No Messages yet"
             description="You have no inbox currently."
           />
+
           <Button onClick={() => setOpen(true)}>Create message</Button>
         </div>
       ) : (
         <React.Fragment>
           {data?.map((message) => (
-            <div className="space-y-2 py-2">
-              <div className="space-y-1">
+            <div className="space-y-2 py-2 hover:bg-slate-50 rounded-md p-2">
+              <div className="space-y-2">
                 <div className="flex justify-between items-start">
                   <h1
                     className={cn(
@@ -105,14 +123,19 @@ export const EachMessage = ({
                     </div>
                   )}
                 </div>
-                <p className="text-default font-light text-[10px]">
+                <p className="text-default font-light text-[10px] multiline-truncate">
                   {message.body}
                 </p>
-                {message.file_path && (
-                  <p className="text-default font-light text-[10px]">
-                    View file: {message.file_path}
-                  </p>
-                )}
+                <p
+                  onClick={() => {
+                    setSelectedMessage({ ...message, isView: true });
+                    setOpen(true);
+                  }}
+                  className="text-xs font-medium text-primary"
+                  role="button"
+                >
+                  View message
+                </p>
                 <div
                   className={cn(
                     'flex justify-between items-center',
@@ -121,12 +144,28 @@ export const EachMessage = ({
                       : 'text-primary'
                   )}
                 >
-                  <div className="flex items-center space-x-1">
-                    <CircleDotDashed size={12} />
-                    <p className="uppercase text-[10px] font-medium">
-                      {message.message_status.name}
-                    </p>
-                  </div>
+                  {message.message_status.name === 'Unread' ? (
+                    <div
+                      className="flex items-center space-x-1"
+                      role="button"
+                      onClick={() => mutate(message.id.toString())}
+                    >
+                      <CircleDashed size={12} />
+                      <p className="uppercase text-[10px] font-medium">
+                        MARK AS READ
+                      </p>
+                      {isPending && (
+                        <Loader2 className=" animate-spin" size={14} />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-1">
+                      <CircleDotDashed size={12} />
+                      <p className="uppercase text-[10px] font-medium">
+                        {message.message_status.name}
+                      </p>
+                    </div>
+                  )}
                   <p className="text-xs font-light">{message.sent_on}</p>
                 </div>
               </div>
