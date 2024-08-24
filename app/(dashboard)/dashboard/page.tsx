@@ -1,11 +1,12 @@
+'use server';
 import { DashboardCard, cardData } from '@/components/dashboard-card';
 import AreaChartComponent from '@/components/ui/area-chart-component';
-import { dataA, dataB, guarantorRequests } from './data';
-import GuarantorRequestCard from '@/components/guarantor-request-card';
+import { dataA, dataB } from './data';
+import DashboardGuarantors from '@/components/dashboard/guarantors';
 
-export default function Dashboard() {
+export default async function Dashboard() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-4">
       <h1 className="text-default font-semibold text-sm">Dashboard</h1>
       <div className="grid lg:grid-cols-3 gap-4 overflow-y-auto">
         {cardData.map((data) => (
@@ -24,10 +25,8 @@ export default function Dashboard() {
         <h1 className="text-defalt font-semibold text-[14px]">
           Guarantor requests
         </h1>
-        <div className="grid lg:grid-cols-3 w-full gap-4">
-          {guarantorRequests.map((card) => (
-            <GuarantorRequestCard key={card.name} data={card} />
-          ))}
+        <div className=" w-full gap-4">
+          <DashboardGuarantors />
         </div>
       </div>
     </div>

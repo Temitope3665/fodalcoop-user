@@ -1,5 +1,5 @@
 import client from '@/lib/axios-instance';
-import { MESSAGE_EP } from '../endpoints';
+import { LOAN_GUARANTOR_EP, MESSAGE_EP } from '../endpoints';
 import { ApiResponse, IMessageResponse } from '@/types';
 import { formSchema } from '@/components/forms/add-message-form';
 import { z } from 'zod';
@@ -23,4 +23,11 @@ export const composeMessage = (
 export const readMessage = (messageId: string): Promise<ApiResponse> =>
   client
     .get(`${MESSAGE_EP}/read/${messageId}`)
+    .then((response) => response.data);
+
+export const getDashboardGuarantorRequest = (): Promise<{
+  data: { name: string; phone: string; liability: string }[];
+}> =>
+  client
+    .get(`${LOAN_GUARANTOR_EP}/incoming-home`)
     .then((response) => response.data);

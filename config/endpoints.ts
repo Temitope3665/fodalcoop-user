@@ -7,6 +7,7 @@ export const SET_NEW_PASSWORD_EP: string = '/set-password';
 
 // Authenticated
 export const MESSAGE_EP: string = '/message';
+export const LOAN_GUARANTOR_EP: string = '/loan-guarantor';
 
 // Profile
 export const PROFILE_EP: string = '/member/profile';

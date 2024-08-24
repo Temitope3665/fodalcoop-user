@@ -2,12 +2,14 @@
 import ChangePasswordForm from '@/components/forms/change-password-form';
 import ProfileForm from '@/components/forms/profile-form';
 import SupportForm from '@/components/forms/support-form';
+import useStore from '@/lib/use-store';
 import { ShieldAlert, User } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { ReactNode } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 export default function Support() {
+  const { user } = useStore();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -23,7 +25,7 @@ export default function Support() {
       title: 'Edit Profile',
       id: 0,
       icon: <User size={14} />,
-      component: <ProfileForm />,
+      component: <ProfileForm user={user} />,
     },
     {
       title: 'Change Password',

@@ -42,32 +42,30 @@ export const GuarantorTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       value={currentTab}
       onValueChange={(value) => handleFilter(value)}
     >
-      <div className="lg:flex justify-between border-b pb-2 items-center pr-4">
-        <TabsList className=" bg-white">
-          {tabs.map((tab) => (
-            <TabsTrigger
-              key={tab.value}
-              value={tab.title}
-              role="button"
+      {/* <div className="lg:flex justify-between border-b pb-2 items-center pr-4"> */}
+      <TabsList className=" bg-white">
+        {tabs.map((tab) => (
+          <TabsTrigger
+            key={tab.value}
+            value={tab.title}
+            role="button"
+            className={cn(
+              'w-fit text-xs text-[#666666] py-1 font-light space-x-2'
+            )}
+          >
+            <p>{tab.title}</p>
+            <div
               className={cn(
-                'w-fit text-xs text-[#666666] py-4 font-light space-x-2 border-light rounded-none px-4 flex items-center',
-                currentTab === tab.title &&
-                  'border-primary border-b-[1.5px] font-medium'
+                'rounded-sm w-6 h-6 flex bg-[#F0F0F0] text-[#888888] items-center justify-center',
+                currentTab === tab.title && 'bg-[#EEF0F9] text-primary'
               )}
             >
-              <p>{tab.title}</p>
-              <div
-                className={cn(
-                  'rounded-sm w-6 h-6 flex bg-[#F0F0F0] text-[#888888] items-center justify-center',
-                  currentTab === tab.title && 'bg-[#EEF0F9] text-primary'
-                )}
-              >
-                {tab.value}
-              </div>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </div>
+              {tab.value}
+            </div>
+          </TabsTrigger>
+        ))}
+      </TabsList>
+
       <>
         {tabs.map((tab) => (
           <TabsContent
