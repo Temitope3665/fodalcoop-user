@@ -59,3 +59,6 @@ export function converBase64ToFile(base64: string) {
   const blob = new Blob([ab], { type: mimeString });
   return new File([blob], 'image', { type: mimeString });
 }
+
+export const phoneNumberPattern =
+  /^(?:(?:\+234)|(?:0))(70|80|90|81|91|1)\d{7,8}$/;

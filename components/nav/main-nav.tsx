@@ -26,8 +26,6 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
   const { user } = useStore();
   const pathname = usePathname();
 
-  console.log(user, 'user');
-
   return (
     <header className="flex justify-between h-[8vh] border-b border-b-[#eeeded] bg-white fixed w-full z-10 top-0">
       <div className="flex space-x-2 items-center lg:border-r lg:w-[18%] px-8">
@@ -42,7 +40,9 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="space-x-2 flex" role="button">
-              <p>{user?.member.firstName + ' ' + user?.member.lastName}</p>
+              <p>
+                {`${user?.member.firstName || ''} ${user?.member.lastName || ''}`}
+              </p>
               <UserProfileIcon />
             </div>
           </DropdownMenuTrigger>

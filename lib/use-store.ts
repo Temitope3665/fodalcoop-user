@@ -1,10 +1,19 @@
+import { IUser } from '@/types';
 import { create } from 'zustand';
 
-interface IUser {
-  email: string;
-  id: string;
-  member: { lastName: string; firstName: string };
-}
+const defaultUser = {
+  email: '',
+  id: '',
+  member: {
+    lastName: '',
+    firstName: '',
+    id: '',
+    email: '',
+    phone: '',
+    residentialAddress: '',
+    agency_id: '',
+  },
+};
 
 interface StoreState {
   count: number;
@@ -18,7 +27,7 @@ const useStore = create<StoreState>((set) => ({
   count: 0,
   increase: () => set((state) => ({ count: state.count + 1 })),
   reset: () => set({ count: 0 }),
-  user: null,
+  user: defaultUser,
   setUser: (user) => set({ user }),
 }));
 

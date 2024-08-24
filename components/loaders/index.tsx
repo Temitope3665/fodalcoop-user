@@ -9,3 +9,11 @@ export function MessagesLoading({ columns }: { columns?: number }) {
     </div>
   );
 }
+
+export function ProfileLoading() {
+  return (
+    <div className="space-y-4 py-4">
+      <Skeleton className="w-full h-48" />
+    </div>
+  );
+}

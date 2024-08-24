@@ -106,3 +106,17 @@ export interface IMessageResponse {
   file_path: string;
   isView?: boolean;
 }
+
+export interface IUser {
+  email: string;
+  id: string;
+  member: {
+    lastName: string;
+    firstName: string;
+    id: string | number;
+    email: string;
+    phone: string;
+    residentialAddress: string;
+    agency_id: string;
+  };
+}

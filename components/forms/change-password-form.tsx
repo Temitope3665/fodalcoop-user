@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
@@ -18,55 +17,71 @@ import {
 } from '@/components/ui/form';
 
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-import { ONBOARDING_STEP_ONE_URL, RESET_PASSWORD_URL } from '@/config/paths';
 import { Eye, EyeOff } from 'lucide-react';
 import InputAdornment from '@/components/ui/input-adornment';
-import { wait } from '@/lib/utils';
+import { toast } from 'sonner';
+import { useMutation } from '@tanstack/react-query';
+import { updatePassword } from '@/config/apis/profile';
+import { ErrorMessages } from '../showError';
 
-export const formSchema = z.object({
-  password: z.string().min(1, { message: 'Password is required' }),
-  newPassword: z.string().min(1, { message: 'New password is required' }),
-  confirmNewPassword: z
+export const passwordSchema = z.object({
+  currentPassword: z
+    .string()
+    .min(1, { message: 'Current password is required' }),
+  password: z.string().min(1, { message: 'New password is required' }),
+  confirmPassword: z
     .string()
     .min(1, { message: 'Confirm password is required' }),
 });
 
 export default function ChangePasswordForm() {
-  const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [errorField, setErrorField] = React.useState<any | null>(null);
+  const form = useForm<z.infer<typeof passwordSchema>>({
+    resolver: zodResolver(passwordSchema),
     defaultValues: {
+      currentPassword: '',
       password: '',
-      newPassword: '',
-      confirmNewPassword: '',
+      confirmPassword: '',
     },
   });
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isPending, setIsPending] = React.useState(false);
+  const [showPassword1, setShowPassword1] = React.useState(false);
+  const [showPassword2, setShowPassword2] = React.useState(false);
 
   const togglePasswordVisibility = () =>
     setShowPassword((prevState) => !prevState);
+  const togglePasswordVisibility1 = () =>
+    setShowPassword1((prevState) => !prevState);
+  const togglePasswordVisibility2 = () =>
+    setShowPassword2((prevState) => !prevState);
 
-  function onSubmit() {
-    setIsPending(true);
-    wait().then(() => {
-      router.push(ONBOARDING_STEP_ONE_URL);
-      setIsPending(false);
-    });
+  const { mutate, isPending } = useMutation({
+    mutationFn: updatePassword,
+    onSuccess: () => {
+      toast.success('Password updated successfully');
+    },
+    onError: (error: any) =>
+      setErrorField(
+        error.response.data.errors || { Error: [error.response.data.error] }
+      ),
+  });
+
+  function onSubmit(data: z.infer<typeof passwordSchema>) {
+    mutate(data);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
+        <ErrorMessages errors={errorField} setErrors={setErrorField} />
         <FormField
           control={form.control}
-          name="password"
+          name="currentPassword"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>New password</FormLabel>
+              <FormLabel>Current Password</FormLabel>
               <FormControl>
                 <FormGroup>
                   <Input
@@ -79,7 +94,13 @@ export default function ChangePasswordForm() {
                     {...field}
                   />
                   <InputAdornment
-                    adornment={showPassword ? <EyeOff /> : <Eye />}
+                    adornment={
+                      showPassword ? (
+                        <EyeOff size={20} strokeWidth={1} />
+                      ) : (
+                        <Eye size={20} strokeWidth={1} />
+                      )
+                    }
                     onClick={togglePasswordVisibility}
                     position="end"
                   />
@@ -91,14 +112,14 @@ export default function ChangePasswordForm() {
         />
         <FormField
           control={form.control}
-          name="newPassword"
+          name="password"
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel>New Password</FormLabel>
               <FormControl>
                 <FormGroup>
                   <Input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword1 ? 'text' : 'password'}
                     autoCapitalize="none"
                     autoComplete="off"
                     autoCorrect="off"
@@ -107,8 +128,14 @@ export default function ChangePasswordForm() {
                     {...field}
                   />
                   <InputAdornment
-                    adornment={showPassword ? <EyeOff /> : <Eye />}
-                    onClick={togglePasswordVisibility}
+                    adornment={
+                      showPassword1 ? (
+                        <EyeOff size={20} strokeWidth={1} />
+                      ) : (
+                        <Eye size={20} strokeWidth={1} />
+                      )
+                    }
+                    onClick={togglePasswordVisibility1}
                     position="end"
                   />
                 </FormGroup>
@@ -119,14 +146,14 @@ export default function ChangePasswordForm() {
         />
         <FormField
           control={form.control}
-          name="confirmNewPassword"
+          name="confirmPassword"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Confirm new password</FormLabel>
+              <FormLabel>Confirm New password</FormLabel>
               <FormControl>
                 <FormGroup>
                   <Input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword2 ? 'text' : 'password'}
                     autoCapitalize="none"
                     autoComplete="off"
                     autoCorrect="off"
@@ -135,8 +162,14 @@ export default function ChangePasswordForm() {
                     {...field}
                   />
                   <InputAdornment
-                    adornment={showPassword ? <EyeOff /> : <Eye />}
-                    onClick={togglePasswordVisibility}
+                    adornment={
+                      showPassword2 ? (
+                        <EyeOff size={20} strokeWidth={1} />
+                      ) : (
+                        <Eye size={20} strokeWidth={1} />
+                      )
+                    }
+                    onClick={togglePasswordVisibility2}
                     position="end"
                   />
                 </FormGroup>
@@ -149,10 +182,11 @@ export default function ChangePasswordForm() {
           type="submit"
           size="lg"
           pending={isPending}
-          pendingText="Please wait"
-          className="lg:w-[40%] w-full"
+          pendingText="Please wait..."
+          className="w-full"
+          disabled={!form.formState.isDirty}
         >
-          Next
+          Save
         </Button>
       </form>
     </Form>

@@ -7,3 +7,6 @@ export const SET_NEW_PASSWORD_EP: string = '/set-password';
 
 // Authenticated
 export const MESSAGE_EP: string = '/message';
+
+// Profile
+export const PROFILE_EP: string = '/member/profile';
