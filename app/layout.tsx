@@ -42,7 +42,7 @@ export default function RootLayout({
             <TanstackProvider>
               <AppContextProvider>
                 {children}
-                <Toaster richColors duration={5000} />
+                <Toaster richColors duration={2000} closeButton />
               </AppContextProvider>
             </TanstackProvider>
           </Suspense>

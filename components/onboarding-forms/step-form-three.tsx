@@ -20,41 +20,62 @@ import { Button } from '@/components/ui/button';
 
 import {
   ONBOARDING_STEP_FOUR_URL,
-  ONBOARDING_STEP_ONE_URL,
+  ONBOARDING_STEP_TWO_URL,
 } from '@/config/paths';
 import { wait } from '@/lib/utils';
 import { PhoneInput } from '../ui/phone-input';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 
+interface IDefaultUser {
+  firstName: string | undefined;
+  lastName: string | undefined;
+  email: string | undefined;
+  residential: string | undefined;
+  offAddress: string | undefined;
+  dob: Date | undefined;
+  doe: Date | undefined;
+  nokName: string | undefined;
+  nokRel: string | undefined;
+  nokTel: string | undefined;
+  nokAddress: string | undefined;
+}
+
 export const formSchema = z.object({
-  nextOfKinName: z.string().min(1, { message: 'Next of kin is required' }),
-  relationship: z
+  nokName: z.string().min(1, { message: 'Next of kin is required' }),
+  nokRel: z
     .string()
-    .min(1, { message: 'Relationship with next is kin is required' }),
-  nextOfKinTelephone: z
+    .min(1, { message: 'Relationship with next of kin is required' }),
+  nokTel: z
     .any()
     .refine(isValidPhoneNumber, { message: 'Invalid phone number' }),
-  nextOfKinAddress: z
-    .string()
-    .min(1, { message: 'Next of kin phone number is required' }),
+  nokAddress: z.string().min(1, { message: 'Next of kin address is required' }),
 });
 
 export default function StepThreeForm() {
   const router = useRouter();
+  const getCurrentUser =
+    (typeof window !== 'undefined' && localStorage.getItem('fodal_user')) ||
+    '{}';
+  const defaultUser: IDefaultUser = JSON.parse(getCurrentUser);
   const [isBack, setIsBack] = React.useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nextOfKinName: '',
-      relationship: '',
-      nextOfKinTelephone: '',
+      nokName: defaultUser.nokName || '',
+      nokRel: defaultUser.nokRel || '',
+      nokTel: defaultUser.nokTel || '',
+      nokAddress: defaultUser.nokAddress || '',
     },
   });
   const [isPending, setIsPending] = React.useState(false);
 
-  function onSubmit() {
+  function onSubmit(data: z.infer<typeof formSchema>) {
     setIsPending(true);
     wait().then(() => {
+      localStorage.setItem(
+        'fodal_user',
+        JSON.stringify({ ...defaultUser, ...data })
+      );
       router.push(ONBOARDING_STEP_FOUR_URL);
       setIsPending(false);
     });
@@ -63,7 +84,11 @@ export default function StepThreeForm() {
   function handleBack() {
     setIsBack(true);
     wait().then(() => {
-      router.back();
+      localStorage.setItem(
+        'fodal_user',
+        JSON.stringify({ ...defaultUser, ...form.getValues() })
+      );
+      router.push(ONBOARDING_STEP_TWO_URL);
       setIsBack(false);
     });
   }
@@ -73,7 +98,7 @@ export default function StepThreeForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-5">
         <FormField
           control={form.control}
-          name="nextOfKinName"
+          name="nokName"
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel>Next of kin name</FormLabel>
@@ -91,7 +116,7 @@ export default function StepThreeForm() {
         />
         <FormField
           control={form.control}
-          name="relationship"
+          name="nokRel"
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel>Relationship with next of kin</FormLabel>
@@ -110,7 +135,7 @@ export default function StepThreeForm() {
 
         <FormField
           control={form.control}
-          name="nextOfKinTelephone"
+          name="nokTel"
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
               <FormLabel>Phone Number</FormLabel>
@@ -123,7 +148,7 @@ export default function StepThreeForm() {
         />
         <FormField
           control={form.control}
-          name="nextOfKinAddress"
+          name="nokAddress"
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel>Next of kin address</FormLabel>
@@ -158,7 +183,7 @@ export default function StepThreeForm() {
             pendingText="Please wait"
             className="w-full"
           >
-            Next
+            Save & Next
           </Button>
         </div>
       </form>

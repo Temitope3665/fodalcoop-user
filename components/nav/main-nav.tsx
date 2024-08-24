@@ -7,12 +7,15 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { MessageIcon, UserProfileIcon } from '@/assets/svgs';
-import { Info, LogOut, Menu, Settings, X } from 'lucide-react';
+import { Info, LogOut, Settings } from 'lucide-react';
 import { SETTINGS_URL, SUPPORT_URL } from '@/config/paths';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import CompanyLogo from '@/assets/icons/fodal-icon.svg';
+import useStore from '@/lib/use-store';
 
 interface IMainNav {
   isOpen?: boolean;
@@ -20,11 +23,18 @@ interface IMainNav {
 }
 
 export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
+  const { user } = useStore();
   const pathname = usePathname();
+
+  console.log(user, 'user');
+
   return (
-    <header className="flex justify-between py-4 border-b border-b-[#eeeded] px-8 bg-white fixed w-full z-10 top-0">
-      <h1 className="text-pr font-semibold">Foodal</h1>
-      <div className="flex space-x-8 font-light text-sm text-[#444444] items-center">
+    <header className="flex justify-between h-[8vh] border-b border-b-[#eeeded] bg-white fixed w-full z-10 top-0">
+      <div className="flex space-x-2 items-center lg:border-r lg:w-[18%] px-8">
+        <Image src={CompanyLogo} alt="company logo" width={30} height={30} />
+        <h1 className="text-pr font-semibold text-primary">Foodal</h1>
+      </div>
+      <div className="flex space-x-8 font-light text-sm text-[#444444] items-center px-8">
         <div className="relative" role="button">
           <MessageIcon />
           <div className="absolute bg-[#DD2350] w-2 h-2 rounded-full -top-1 -right-1" />
@@ -32,7 +42,7 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="space-x-2 flex" role="button">
-              <p>Chike Opara</p>
+              <p>{user?.member.firstName + ' ' + user?.member.lastName}</p>
               <UserProfileIcon />
             </div>
           </DropdownMenuTrigger>

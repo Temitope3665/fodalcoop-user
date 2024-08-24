@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getToken } from './actions';
-import { DASHBOARD_PATH, LOGIN_URL } from '@/config/paths';
+import { DASHBOARD_HOME_URL, LOGIN_URL } from '@/config/paths';
 import { toast } from 'sonner';
 
 const client = axios.create({
@@ -34,7 +34,7 @@ client.interceptors.response.use(
     const originalConfig = error.config;
 
     if (error?.response && error?.response?.status === 403) {
-      window.location.replace(DASHBOARD_PATH);
+      window.location.replace(DASHBOARD_HOME_URL);
       toast.error(error?.response?.data?.message);
     }
 

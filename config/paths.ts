@@ -1,8 +1,8 @@
-export const DASHBOARD_PATH: string = '/dashboard';
 export const LOGIN_URL: string = '/';
 export const RESET_PASSWORD_URL: string = '/reset-password';
-export const CREATE_NEW_PASSWORD_URL: string = '/create-new-password';
+export const CREATE_NEW_PASSWORD_URL: string = '/set-new-password';
 export const CREATE_ACCOUNT_URL: string = '/create-account';
+export const VERIFY_OTP: string = '/verify';
 
 // Onboarding
 export const ONBOARDING_STEP_ONE_URL: string = '/onboarding/step-one';
@@ -27,3 +27,28 @@ export const SETTINGS_URL: string = '/settings';
 
 // Supports
 export const SUPPORT_URL: string = '/support';
+
+export const protectedRoutes: string[] = [
+  DASHBOARD_HOME_URL,
+  LOANS_URL,
+  SAVINGS_URL,
+  MARKET_URL,
+  GUARANTOR_URL,
+  VOTING_URL,
+  CARTS_URL,
+  SETTINGS_URL,
+  SUPPORT_URL,
+];
+
+export const authRoutes: string[] = [
+  LOGIN_URL,
+  RESET_PASSWORD_URL,
+  CREATE_NEW_PASSWORD_URL,
+  CREATE_ACCOUNT_URL,
+  VERIFY_OTP,
+  ONBOARDING_STEP_ONE_URL,
+  ONBOARDING_STEP_TWO_URL,
+  ONBOARDING_STEP_THREE_URL,
+  ONBOARDING_STEP_FOUR_URL,
+  ONBOARDING_REVIEW_URL,
+];

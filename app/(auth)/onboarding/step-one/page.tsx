@@ -1,3 +1,4 @@
+'use server';
 import StepOneForm from '@/components/onboarding-forms/step-form-one';
 import { Slider } from '@/components/ui/slider';
 

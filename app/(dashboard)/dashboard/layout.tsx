@@ -1,8 +1,10 @@
+'use server';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { Suspense } from 'react';
+import Messages from './messages';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -17,7 +19,10 @@ export default function DashboardLayout({
           <h1 className="text-default font-semibold text-sm">Messages</h1>
           <Separator />
         </div>
-        {messages.map((message, index) => (
+        <Suspense fallback={<p>Loading</p>}>
+          <Messages />
+        </Suspense>
+        {/* {messages.map((message, index) => (
           <React.Fragment key={`${message}-${index}`}>
             <div className="space-y-2 py-2">
               <div className="space-y-1">
@@ -32,7 +37,7 @@ export default function DashboardLayout({
               <Separator />
             </div>
           </React.Fragment>
-        ))}
+        ))} */}
       </div>
     </div>
   );

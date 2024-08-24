@@ -64,6 +64,16 @@ export async function storeUser(details: {
 // User
 
 export async function getUser() {
-  const token = cookies().get('user');
-  return token;
+  const userCookie = cookies().get('user');
+
+  if (userCookie) {
+    try {
+      const user = JSON.parse(userCookie.value); // Parse the JSON string
+      return user;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  return null; // Return null if the cookie doesn't exist
 }

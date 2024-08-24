@@ -77,5 +77,31 @@ export type IApplicationData = {
 export interface ApiResponse {
   success: boolean;
   message: string;
-  data: any;
+}
+
+export interface IDefaultUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  residential: string;
+  offAddress: string;
+  dob: string;
+  doe: string;
+  nokName: string;
+  nokRel: string;
+  nokTel: string;
+  nokAddress: string;
+  image: string | any;
+  agency: string;
+  phone: string;
+}
+
+export interface IMessageResponse {
+  subject: string;
+  body: string;
+  sent_on: string;
+  message_status: { name: string };
+  id: number;
+  replyId: string;
+  file_path: string;
 }

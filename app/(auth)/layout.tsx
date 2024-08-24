@@ -2,23 +2,24 @@
 import LayoutBackground from '@/assets/images/login-background.png';
 import LayoutBackground2 from '@/assets/images/beautiful-american-lady.jpeg';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import React, { useEffect, useState } from 'react';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <div className="bg-[#000]">
-      <div
-        // style={{
-        //   backgroundImage: isDesktop ? `url(${LayoutBackground2.src})` : '',
-        //   backgroundSize: 'cover',
-        // }}
-        className="lg:flex justify-between items-center lg:min-h-screen  lg:bg-none bg-[#2F4A89]"
-      >
-        <div className="lg:w-[35%] w-full lg:flex items-center lg:h-screen lg:bg-white lg:pt-0">
-          {children}
+      <div className="lg:flex justify-between items-center lg:min-h-screen  lg:bg-none bg-[#2F4A89]">
+        <div className="lg:w-[40%] w-full lg:flex items-center h-screen lg:bg-white lg:py-6 overflow-y-auto px-8">
+          {isClient && <React.Fragment>{children}</React.Fragment>}
         </div>
         <div
-          className="hidden w-[65%] lg:flex items-center justify-center h-screen relative"
+          className="hidden w-[60%] lg:flex items-center justify-center h-screen relative"
           style={{
             backgroundImage: isDesktop ? `url(${LayoutBackground2.src})` : '',
             backgroundSize: 'cover',

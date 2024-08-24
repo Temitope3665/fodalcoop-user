@@ -12,20 +12,37 @@ import {
   FormField,
   FormGroup,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-import { ONBOARDING_REVIEW_URL, ONBOARDING_STEP_ONE_URL } from '@/config/paths';
+import {
+  ONBOARDING_REVIEW_URL,
+  ONBOARDING_STEP_THREE_URL,
+} from '@/config/paths';
 import { wait } from '@/lib/utils';
 import { DefaultImage } from '@/assets/svgs';
 import { Label } from '../ui/label';
 
+interface IDefaultUser {
+  firstName: string | undefined;
+  lastName: string | undefined;
+  email: string | undefined;
+  residential: string | undefined;
+  offAddress: string | undefined;
+  dob: Date | undefined;
+  doe: Date | undefined;
+  nokName: string | undefined;
+  nokRel: string | undefined;
+  nokTel: string | undefined;
+  nokAddress: string | undefined;
+  image: string | undefined;
+}
+
 export const formSchema = z.object({
-  passport: z.string().refine((value) => {
+  image: z.string().refine((value) => {
     // Check if the value is a valid base64 string
     if (!/^data:image\/(png|jpg|jpeg);base64,/.test(value)) {
       throw new z.ZodError([
@@ -43,17 +60,25 @@ export const formSchema = z.object({
 export default function StepFourForm() {
   const router = useRouter();
   const [isBack, setIsBack] = React.useState(false);
+  const getCurrentUser =
+    (typeof window !== 'undefined' && localStorage.getItem('fodal_user')) ||
+    '{}';
+  const defaultUser: IDefaultUser = JSON.parse(getCurrentUser);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      passport: '',
+      image: defaultUser.image || '',
     },
   });
   const [isPending, setIsPending] = React.useState(false);
 
-  function onSubmit() {
+  function onSubmit(data: z.infer<typeof formSchema>) {
     setIsPending(true);
     wait().then(() => {
+      localStorage.setItem(
+        'fodal_user',
+        JSON.stringify({ ...defaultUser, ...data })
+      );
       router.push(ONBOARDING_REVIEW_URL);
       setIsPending(false);
     });
@@ -62,7 +87,7 @@ export default function StepFourForm() {
   function handleBack() {
     setIsBack(true);
     wait().then(() => {
-      router.back();
+      router.push(ONBOARDING_STEP_THREE_URL);
       setIsBack(false);
     });
   }
@@ -77,8 +102,8 @@ export default function StepFourForm() {
         const reader = new FileReader();
         reader.onloadend = () => {
           const result = reader.result as string;
-          form.setValue('passport', result);
-          form.setError('passport', { message: '' });
+          form.setValue('image', result);
+          form.setError('image', { message: '' });
         };
         reader.readAsDataURL(file);
       }
@@ -90,14 +115,14 @@ export default function StepFourForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
         <FormField
           control={form.control}
-          name="passport"
+          name="image"
           render={({ field, fieldState }) => (
             <FormItem>
               <Label>Upload passport</Label>
               <FormControl>
                 <FormGroup>
                   <div className="border-dashed rounded-sm p-5 border w-full border-[rgba(47, 74, 137, 0.25)] flex space-x-4 items-center">
-                    <div className="rounded-full w-[40px] h-[40px] flex justify-center items-center bg-[#2F4A891A]">
+                    <div className="rounded-full w-[80px] h-[80px] flex justify-center items-center bg-[#2F4A891A]">
                       {field.value ? (
                         <img
                           src={field.value}
@@ -147,7 +172,7 @@ export default function StepFourForm() {
             pendingText="Please wait"
             className="w-full"
           >
-            Next
+            Save & Next
           </Button>
         </div>
       </form>

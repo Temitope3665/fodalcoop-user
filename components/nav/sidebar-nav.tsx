@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { SidebarNavItem } from '@/types';
 import { X } from 'lucide-react';
+import CompanyLogo from '@/assets/icons/fodal-icon.svg';
+import Image from 'next/image';
 
 interface ISidebarNav {
   setOpen: (arg: boolean) => void;
@@ -16,13 +18,21 @@ export default function SidebarNav({ setOpen, open }: ISidebarNav) {
   return (
     <div
       className={cn(
-        'flex h-full max-h-screen flex-col lg:gap-5 fixed w-[85%] bg-white lg:w-[18%] z-50  ease-in-out duration-300',
+        'flex h-full max-h-screen flex-col lg:gap-5 fixed w-[85%] bg-white lg:w-[18%] z-50  ease-in-out duration-300 border-r py-8',
         open ? '' : '-translate-x-full md:translate-x-0'
       )}
     >
       <div className="flex-1">
         <div className="px-6 pt-4 pb-3 border-b border-b-[#eeeded] bg-white lg:hidden flex items-center justify-between">
-          <h1 className="text-pr font-semibold">Foodal</h1>
+          <div className="flex items-center">
+            <Image
+              src={CompanyLogo}
+              alt="company logo"
+              width={30}
+              height={30}
+            />
+            <h1 className="text-pr font-semibold">Foodal</h1>
+          </div>
           <X role="button" onClick={() => setOpen(false)} />
         </div>
         <nav className="items-start px-2 text-sm font-medium lg:px-4 space-y-2 pt-8 lg:pt-0">

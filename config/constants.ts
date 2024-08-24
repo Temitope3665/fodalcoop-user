@@ -1,0 +1,16 @@
+export const onboardingKeys: string[] = [
+  'firstName',
+  'lastName',
+  'email',
+  'residential',
+  'offAddress',
+  'dob',
+  'doe',
+  'nokName',
+  'nokRel',
+  'nokTel',
+  'nokAddress',
+  'image',
+  'agency',
+  'phone',
+];
