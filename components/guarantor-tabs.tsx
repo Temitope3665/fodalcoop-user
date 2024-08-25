@@ -6,57 +6,99 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import SearchInput from './ui/search-input';
 import DataTable from './ui/data-table';
-import { IGuarantorData } from '@/types';
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getGuarantors } from '@/config/apis/guarantor';
+import {
+  INCOMING_GUARANTOR_KEY,
+  OUTGOING_GUARANTOR_KEY,
+} from '@/lib/query-keys';
+import { IGuarantorData } from '@/types';
+import { columns } from '@/app/(dashboard)/guarantors/column';
+import { TableSkeleton } from './loaders';
 
-interface ITableTabs {
-  currentTab: string;
-  tabs: {
-    value: string;
-    title: string;
-    data: IGuarantorData[];
-    columns: any;
-  }[];
-}
-
-export const GuarantorTableTabs = ({ currentTab, tabs }: ITableTabs) => {
+export const GuarantorTableTabs = () => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams();
+  const currentTab = searchParams.get('tab') || 'incoming';
 
   const handleFilter = useDebouncedCallback((tab: string) => {
     const params = new URLSearchParams(searchParams);
     if (tab) {
-      params.set('q', tab);
+      params.set('tab', tab);
     } else {
-      params.delete(tab || 'q');
+      params.delete(tab);
     }
     replace(`${pathname}?${params.toString()}`);
-    replace(`${pathname}?${params.toString()}`);
   }, 200);
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryFn: () => getGuarantors('incoming'),
+    queryKey: [INCOMING_GUARANTOR_KEY],
+    enabled: currentTab === 'incoming',
+  });
+
+  const {
+    data: data1,
+    isLoading: isLoading1,
+    isError: isError1,
+    error: error1,
+  } = useQuery({
+    queryFn: () => getGuarantors('outgoing'),
+    queryKey: [OUTGOING_GUARANTOR_KEY],
+    enabled: currentTab === 'outgoing',
+  });
+
+  const incoming = data?.data || [];
+  const outgoing = data1?.data || [];
+
+  const tabs: {
+    value: string | number;
+    type: string;
+    data: IGuarantorData[];
+    columns: any;
+  }[] = [
+    {
+      type: 'incoming',
+      value: incoming.length,
+      data: incoming,
+      columns: columns,
+    },
+    {
+      type: 'outgoing',
+      value: outgoing.length,
+      data: outgoing,
+      columns: columns,
+    },
+  ];
+
+  if (isError || isError1) {
+    throw new Error(error?.message || error1?.message);
+  }
 
   return (
     <Tabs
       defaultValue={currentTab}
-      className="w-full"
+      className="w-full px-4"
       value={currentTab}
       onValueChange={(value) => handleFilter(value)}
     >
       <TabsList className=" bg-white w-full">
         {tabs.map((tab) => (
           <TabsTrigger
-            key={tab.value}
-            value={tab.title}
+            key={tab.type}
+            value={tab.type}
             role="button"
             className={cn(
-              'w-full text-xs text-[#666666] py-1 font-light space-x-2'
+              'w-fit text-xs text-[#666666] py-1 font-light space-x-2'
             )}
           >
-            <p>{tab.title}</p>
+            <p className="capitalize">{tab.type}</p>
             <div
               className={cn(
                 'rounded-sm w-6 h-6 flex bg-[#F0F0F0] text-[#888888] items-center justify-center',
-                currentTab === tab.title && 'bg-[#EEF0F9] text-primary'
+                currentTab === tab.type && 'bg-[#EEF0F9] text-primary'
               )}
             >
               {tab.value}
@@ -68,8 +110,8 @@ export const GuarantorTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       <>
         {tabs.map((tab) => (
           <TabsContent
-            value={tab.title}
-            className="text-[#777777] text-sm font-light px-4 space-y-4"
+            value={tab.type}
+            className="text-[#777777] text-sm font-light space-y-4"
           >
             <div className="flex justify-between items-center py-2 w-full">
               <div className="flex items-center space-x-4">
@@ -94,12 +136,16 @@ export const GuarantorTableTabs = ({ currentTab, tabs }: ITableTabs) => {
             </div>
 
             <div className="">
-              <DataTable
-                data={tab.data}
-                columns={tab.columns}
-                dataSize={tab.data.length}
-                pageSize={5}
-              />
+              {isLoading || isLoading1 ? (
+                <TableSkeleton />
+              ) : (
+                <DataTable
+                  data={tab.data}
+                  columns={tab.columns}
+                  dataSize={tab.data.length}
+                  pageSize={5}
+                />
+              )}
             </div>
           </TabsContent>
         ))}

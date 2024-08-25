@@ -45,23 +45,3 @@ export const guarantorData: IGuarantorData[] = [
     date: 'Feb 25, 2023',
   },
 ];
-
-export const tabs: {
-  title: string;
-  value: string;
-  data: IGuarantorData[];
-  columns: any;
-}[] = [
-  {
-    title: 'Incoming',
-    value: '24',
-    data: guarantorData,
-    columns: columns,
-  },
-  {
-    title: 'Outgoing',
-    value: '24',
-    data: guarantorData,
-    columns: columns,
-  },
-];

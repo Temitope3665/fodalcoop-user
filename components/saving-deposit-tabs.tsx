@@ -137,11 +137,11 @@ export const SavingTableTabs = () => {
   return (
     <Tabs
       defaultValue={currentTab}
-      className="w-full"
+      className="w-full px-4"
       value={currentTab}
       onValueChange={(value) => handleFilter(value)}
     >
-      <div className="lg:flex justify-between py-1 items-center pr-4">
+      <div className="lg:flex justify-between py-1 items-center">
         <TabsList className=" bg-white">
           {tabs.map((tab) => (
             <TabsTrigger
@@ -167,7 +167,7 @@ export const SavingTableTabs = () => {
 
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button className="space-x-2 lg:flex hidden">
+            <Button className="lg:flex hidden">
               <p>New saving deposit</p> <ArrowRightIcon />
             </Button>
           </SheetTrigger>
@@ -187,7 +187,7 @@ export const SavingTableTabs = () => {
         {tabs.map((tab) => (
           <TabsContent
             value={tab.endpoint}
-            className="text-[#777777] text-sm font-light px-4 space-y-4"
+            className="text-[#777777] text-sm font-light space-y-4"
             key={tab.title}
           >
             <div className="flex justify-between items-center py-2 w-full">

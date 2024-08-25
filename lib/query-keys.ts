@@ -7,4 +7,6 @@ export const STANDARD_SAVINGS_KEY: string = 'standard_savings_key';
 export const NEW_SAVINGS_REQUESTS_KEY: string = 'new_request_savings_key';
 export const TARGETED_SAVINGS_KEY: string = 'targeted_savings_key';
 export const DEPOSIT_LOG_KEY: string = 'deposit_key';
+export const INCOMING_GUARANTOR_KEY: string = 'incoming_guarantor_key';
+export const OUTGOING_GUARANTOR_KEY: string = 'outgoing_guarantor_key';
 export const BANKS_KEY: string = 'bank_key';
