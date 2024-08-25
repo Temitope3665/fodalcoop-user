@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import CustomPagination from './custom-pagination';
+import EmptyComponent from '../empty';
 
 interface DataTableProps {
   columns: any[];
@@ -48,7 +49,7 @@ DataTableProps) => {
   });
   return (
     <div>
-      <Table>
+      <Table className="rounded-lg">
         <TableHeader className="overflow-hidden whitespace-nowrap text-ellipsis">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -95,7 +96,11 @@ DataTableProps) => {
           ) : (
             <TableRow>
               <TableCell colSpan={columns?.length} className="h-24 text-center">
-                No data found.
+                <EmptyComponent
+                  title="No data found"
+                  className="mt-0"
+                  description="The selected data could not be found"
+                />
               </TableCell>
             </TableRow>
           )}

@@ -1,11 +1,17 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+} from '@/components/ui/alert-dialog';
 
 import {
   Form,
@@ -27,19 +33,27 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { cn, wait } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { loanType } from '@/config/loan-config';
 import { Textarea } from '../ui/textarea';
-import { CashDepositIcon, TransferDepositIcon } from '@/assets/svgs';
+import {
+  CashDepositIcon,
+  SuccessIcon,
+  TransferDepositIcon,
+} from '@/assets/svgs';
 import { Label } from '../ui/label';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getBanks } from '@/config/apis/dashboard';
+import { BANKS_KEY } from '@/lib/query-keys';
+import { depositSavings } from '@/config/apis/savings';
+import { ErrorMessages } from '../showError';
 
-export const formSchema = z.object({
+export const savingsDepositSchema = z.object({
   savingsType: z.string().min(1, { message: 'Savings type is required' }),
-  bank: z.string().min(1, { message: 'Bank is required' }),
+  selectAccount: z.string().min(1, { message: 'Bank is required' }),
   amount: z.string().min(1, { message: 'Amount is required' }),
   narration: z.string().min(1, { message: 'Narration is required' }),
-  paymentMethod: z.string().min(1, { message: 'Payment method is required' }),
-  total: z.string().min(1, { message: 'Total is required' }),
+  paymentOption: z.string().min(1, { message: 'Payment method is required' }),
 });
 
 export default function SavingsDepositForm({
@@ -47,20 +61,24 @@ export default function SavingsDepositForm({
 }: {
   setOpen: (arg: boolean) => void;
 }) {
-  const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [openDialog, setOpenDialog] = React.useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const [errorField, setErrorField] = React.useState<any | null>(null);
+  const form = useForm<z.infer<typeof savingsDepositSchema>>({
+    resolver: zodResolver(savingsDepositSchema),
     defaultValues: {
       savingsType: '',
       narration: '',
-      paymentMethod: '',
-      bank: '',
+      paymentOption: '',
+      selectAccount: '',
       amount: '',
-      total: '',
     },
   });
-  const [selectedItem, setSelectedItem] = React.useState(loanType[0]);
-  const [isPending, setIsPending] = React.useState(false);
+
+  const { data, isLoading, isError } = useQuery({
+    queryFn: getBanks,
+    queryKey: [BANKS_KEY],
+  });
 
   const paymentMethods: { name: string; icon: React.ReactNode }[] = [
     {
@@ -73,19 +91,31 @@ export default function SavingsDepositForm({
     },
   ];
 
-  function onSubmit() {
-    setIsPending(true);
-    wait().then(() => {
-      setIsPending(false);
-    });
+  const { mutate, isPending } = useMutation({
+    mutationFn: depositSavings,
+    onSuccess: () => {
+      setOpen(false);
+      setOpenDialog(true);
+      // queryClient.invalidateQueries()
+    },
+    onError: (error: any) =>
+      setErrorField(
+        error.response.data.errors || { Error: [error.response.data.error] }
+      ),
+  });
+
+  function onSubmit(data: z.infer<typeof savingsDepositSchema>) {
+    mutate(data);
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+        <ErrorMessages errors={errorField} setErrors={setErrorField} />
         <FormField
           control={form.control}
           name="savingsType"
-          render={({ field, fieldState }) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Select a savings type</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -96,12 +126,7 @@ export default function SavingsDepositForm({
                 </FormControl>
                 <SelectContent>
                   {loanType.map((loan) => (
-                    <SelectItem
-                      value={loan.type}
-                      onClick={() => setSelectedItem(loan)}
-                    >
-                      {loan.name}
-                    </SelectItem>
+                    <SelectItem value={loan.type}>{loan.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -154,8 +179,8 @@ export default function SavingsDepositForm({
 
         <FormField
           control={form.control}
-          name="bank"
-          render={({ field, fieldState }) => (
+          name="selectAccount"
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Select bank</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -165,14 +190,27 @@ export default function SavingsDepositForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {loanType.map((loan) => (
-                    <SelectItem
-                      value={loan.type}
-                      onClick={() => setSelectedItem(loan)}
-                    >
-                      {loan.name}
-                    </SelectItem>
-                  ))}
+                  {isLoading ? (
+                    <p className="text-sm font-light italic p-3">
+                      Loading banks
+                    </p>
+                  ) : (
+                    <React.Fragment>
+                      {data?.map((each) => (
+                        <SelectItem
+                          value={each.id.toString()}
+                          key={each.accountNumber}
+                        >
+                          {`${each.bank.name} - ${each.accountNumber}`}
+                        </SelectItem>
+                      ))}
+                    </React.Fragment>
+                  )}
+                  {isError && (
+                    <p className="text-sm font-light italic p-3 text-destructive">
+                      Can't fetch banks at the moment
+                    </p>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -182,7 +220,7 @@ export default function SavingsDepositForm({
 
         <FormField
           control={form.control}
-          name="paymentMethod"
+          name="paymentOption"
           render={({ field, fieldState }) => (
             <FormItem>
               <Label>Select payment method</Label>
@@ -193,13 +231,13 @@ export default function SavingsDepositForm({
                     role="button"
                     className={cn(
                       'bg-[#FAFAFA] px-4 py-4 lg:py-6 rounded-sm border space-y-1 trans',
-                      form.getValues('paymentMethod') === method.name &&
+                      form.getValues('paymentOption') === method.name &&
                         'border-primary',
                       fieldState.error?.message && 'border-destructive'
                     )}
                     onClick={() => {
-                      form.setValue('paymentMethod', method.name);
-                      form.setError('paymentMethod', { message: '' });
+                      form.setValue('paymentOption', method.name);
+                      form.setError('paymentOption', { message: '' });
                     }}
                   >
                     <div className="mx-auto text-center">{method.icon}</div>
@@ -223,13 +261,44 @@ export default function SavingsDepositForm({
           <Button
             type="submit"
             pending={isPending}
-            pendingText="Please wait"
+            pendingText="Please wait..."
             className="w-full"
           >
-            Proceed
+            Save
           </Button>
         </div>
       </form>
+
+      <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
+        <AlertDialogContent className="sm:w-[380px]">
+          <AlertDialogHeader>
+            <AlertDialogDescription className="flex justify-center items-center w-full">
+              <div className="text-center space-y-4">
+                <SuccessIcon className="mx-auto" />
+                <div className="space-y-1">
+                  <h1 className="font-bold text-[#222222]">
+                    Savings Deposit Completed Successfully!
+                  </h1>
+                  <p className="text-[12px] font-light">
+                    Your savings deposit has been successfully completed. Your
+                    funds are now securely added to your account, bringing you
+                    one step closer to achieving your financial goals.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  pending={isPending}
+                  pendingText="Please wait..."
+                  onClick={() => setOpenDialog(false)}
+                >
+                  Complete
+                </Button>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
     </Form>
   );
 }

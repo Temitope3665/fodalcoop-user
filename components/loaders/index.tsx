@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 
 export function MessagesLoading({ columns }: { columns?: number }) {
@@ -29,3 +30,33 @@ export function ProfileLoading() {
     </div>
   );
 }
+
+export const TableSkeleton = ({
+  className,
+  columns,
+}: {
+  className?: string;
+  columns?: number;
+}) => {
+  return (
+    <div className={cn('w-full p-4', className)}>
+      <Skeleton className="h-14 rounded-none" />
+      <>
+        {Array(8)
+          .fill(null)
+          .map((_, index) => (
+            <div key={index} className="flex gap-x-6 space-y-2 w-full">
+              {Array(columns || 5)
+                .fill(null)
+                .map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    className="w-full h-8 rounded-none my-2"
+                  />
+                ))}
+            </div>
+          ))}
+      </>
+    </div>
+  );
+};

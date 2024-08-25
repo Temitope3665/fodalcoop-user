@@ -8,6 +8,9 @@ export const SET_NEW_PASSWORD_EP: string = '/set-password';
 // Authenticated
 export const MESSAGE_EP: string = '/message';
 export const LOAN_GUARANTOR_EP: string = '/loan-guarantor';
+export const SAVINGS_EP: string = '/savings';
+export const TARGET_SAVINGS_EP: string = '/target-savings';
+export const BANK_EP: string = '/bank';
 
 // Profile
 export const PROFILE_EP: string = '/member/profile';

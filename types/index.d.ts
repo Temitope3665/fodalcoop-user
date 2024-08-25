@@ -120,3 +120,11 @@ export interface IUser {
     agency_id: string;
   };
 }
+
+export interface IBank {
+  id: number;
+  bank_id: number;
+  accountName: string;
+  accountNumber: number;
+  bank: { name: string; id: number };
+}

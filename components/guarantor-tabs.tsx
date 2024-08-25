@@ -42,7 +42,6 @@ export const GuarantorTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       value={currentTab}
       onValueChange={(value) => handleFilter(value)}
     >
-      {/* <div className="lg:flex justify-between border-b pb-2 items-center pr-4"> */}
       <TabsList className=" bg-white">
         {tabs.map((tab) => (
           <TabsTrigger

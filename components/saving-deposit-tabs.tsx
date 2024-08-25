@@ -7,16 +7,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import SearchInput from './ui/search-input';
 import DataTable from './ui/data-table';
-import { IRepaymentData, IStandardSavingsData } from '@/types';
-import React, { ReactNode, useState } from 'react';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from './ui/alert-dialog';
+import { IStandardSavingsData } from '@/types';
+import React from 'react';
 import SavingsDepositForm from './forms/savings-deposit-form';
 import {
   Sheet,
@@ -26,40 +18,121 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { columns } from '@/app/(dashboard)/savings/column/standard-savings-column';
+import { useQuery } from '@tanstack/react-query';
+import { getStandardSavings } from '@/config/apis/savings';
+import { SAVINGS_EP, TARGET_SAVINGS_EP } from '@/config/endpoints';
+import {
+  DEPOSIT_LOG_KEY,
+  NEW_SAVINGS_REQUESTS_KEY,
+  STANDARD_SAVINGS_KEY,
+  TARGETED_SAVINGS_KEY,
+} from '@/lib/query-keys';
+import { TableSkeleton } from './loaders';
 
-interface ITableTabs {
-  currentTab: string;
-  tabs: {
-    value: string;
-    title: string;
-    data: IStandardSavingsData[] | IRepaymentData[];
-    columns: any;
-  }[];
-}
-
-interface EachLoanRequestView {
-  1: ReactNode;
-  2: ReactNode;
-  3: ReactNode;
-}
-
-export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
+export const SavingTableTabs = () => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState<boolean>(false);
-  const [currentFormView, setCurrentFormView] = useState<number>(1);
+  const currentTab = searchParams.get('tab') || SAVINGS_EP + '/profile';
 
   const handleFilter = useDebouncedCallback((tab: string) => {
     const params = new URLSearchParams(searchParams);
     if (tab) {
-      params.set('q', tab);
+      params.set('tab', tab);
     } else {
-      params.delete(tab || 'q');
+      params.delete(tab);
     }
     replace(`${pathname}?${params.toString()}`);
-    replace(`${pathname}?${params.toString()}`);
   }, 200);
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryFn: () => getStandardSavings(SAVINGS_EP),
+    queryKey: [STANDARD_SAVINGS_KEY],
+    enabled: currentTab === SAVINGS_EP,
+  });
+
+  const {
+    data: data1,
+    isLoading: isLoading1,
+    isError: isError1,
+    error: error1,
+  } = useQuery({
+    queryFn: () => getStandardSavings(SAVINGS_EP + '/profile'),
+    queryKey: [NEW_SAVINGS_REQUESTS_KEY],
+    enabled: currentTab === SAVINGS_EP + '/profile',
+  });
+
+  const {
+    data: data2,
+    isLoading: isLoading2,
+    isError: isError2,
+    error: error2,
+  } = useQuery({
+    queryFn: () => getStandardSavings(TARGET_SAVINGS_EP),
+    queryKey: [TARGETED_SAVINGS_KEY],
+    enabled: currentTab === TARGET_SAVINGS_EP,
+  });
+
+  const {
+    data: data3,
+    isLoading: isLoading3,
+    isError: isError3,
+    error: error3,
+  } = useQuery({
+    queryFn: () => getStandardSavings(SAVINGS_EP + '/deposit-logs'),
+    queryKey: [DEPOSIT_LOG_KEY],
+    enabled: currentTab === SAVINGS_EP + '/deposit-logs',
+  });
+
+  const records = data?.data || [];
+  const records1 = data1?.data || [];
+  const records2 = data2?.data || [];
+  const records3 = data3?.data || [];
+
+  const tabs: {
+    title: string;
+    value: number | string | undefined;
+    data: IStandardSavingsData[];
+    columns: any;
+    endpoint: string;
+  }[] = [
+    {
+      title: 'Deposit request',
+      value: records1 && records1?.length,
+      endpoint: SAVINGS_EP + '/profile',
+      data: records1,
+      columns: columns,
+    },
+    {
+      title: 'Standard savings',
+      endpoint: SAVINGS_EP,
+      value: records && records?.length,
+      data: records,
+      columns: columns,
+    },
+    {
+      title: 'Targeted savings',
+      value: records2 && records2?.length,
+      endpoint: TARGET_SAVINGS_EP,
+      data: records2,
+      columns: columns,
+    },
+    {
+      title: 'Deposit Logs',
+      endpoint: SAVINGS_EP + '/deposit-logs',
+      value: records3 && records3?.length,
+      data: records3,
+      columns: columns,
+    },
+  ];
+
+  if (isError || isError1 || isError2 || isError3) {
+    throw new Error(
+      error?.message || error1?.message || error2?.message || error3?.message
+    );
+  }
 
   return (
     <Tabs
@@ -68,24 +141,22 @@ export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       value={currentTab}
       onValueChange={(value) => handleFilter(value)}
     >
-      <div className="lg:flex justify-between border-b pb-2 items-center pr-4">
-        <TabsList className=" bg-white w-full justify-start overflow-x-auto capitalize">
+      <div className="lg:flex justify-between py-1 items-center pr-4">
+        <TabsList className=" bg-white">
           {tabs.map((tab) => (
             <TabsTrigger
-              key={tab.value}
-              value={tab.title}
+              key={tab.title}
+              value={tab.endpoint}
               role="button"
               className={cn(
-                'w-fit text-xs text-[#666666] py-4 font-light space-x-2 border-light rounded-none px-4 flex items-center',
-                currentTab === tab.title &&
-                  'border-primary border-b-[1.5px] font-medium'
+                'w-fit text-xs text-[#666666] py-1 font-light space-x-2'
               )}
             >
               <p>{tab.title}</p>
               <div
                 className={cn(
                   'rounded-sm w-6 h-6 flex bg-[#F0F0F0] text-[#888888] items-center justify-center',
-                  currentTab === tab.title && 'bg-[#EEF0F9] text-primary'
+                  currentTab === tab.endpoint && 'bg-[#EEF0F9] text-primary'
                 )}
               >
                 {tab.value}
@@ -115,8 +186,9 @@ export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       <>
         {tabs.map((tab) => (
           <TabsContent
-            value={tab.title}
+            value={tab.endpoint}
             className="text-[#777777] text-sm font-light px-4 space-y-4"
+            key={tab.title}
           >
             <div className="flex justify-between items-center py-2 w-full">
               <div className="flex items-center space-x-4">
@@ -141,12 +213,16 @@ export const SavingTableTabs = ({ currentTab, tabs }: ITableTabs) => {
             </div>
 
             <div className="">
-              <DataTable
-                data={tab.data}
-                columns={tab.columns}
-                dataSize={tab.data.length}
-                pageSize={5}
-              />
+              {isLoading || isLoading1 || isLoading2 || isLoading3 ? (
+                <TableSkeleton />
+              ) : (
+                <DataTable
+                  data={tab.data}
+                  columns={tab.columns}
+                  dataSize={tab.data.length}
+                  pageSize={5}
+                />
+              )}
             </div>
           </TabsContent>
         ))}
