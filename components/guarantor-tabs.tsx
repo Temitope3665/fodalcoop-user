@@ -7,7 +7,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import SearchInput from './ui/search-input';
 import DataTable from './ui/data-table';
 import { IGuarantorData } from '@/types';
-import React, { ReactNode, useState } from 'react';
+import React from 'react';
 
 interface ITableTabs {
   currentTab: string;
@@ -42,14 +42,14 @@ export const GuarantorTableTabs = ({ currentTab, tabs }: ITableTabs) => {
       value={currentTab}
       onValueChange={(value) => handleFilter(value)}
     >
-      <TabsList className=" bg-white">
+      <TabsList className=" bg-white w-full">
         {tabs.map((tab) => (
           <TabsTrigger
             key={tab.value}
             value={tab.title}
             role="button"
             className={cn(
-              'w-fit text-xs text-[#666666] py-1 font-light space-x-2'
+              'w-full text-xs text-[#666666] py-1 font-light space-x-2'
             )}
           >
             <p>{tab.title}</p>

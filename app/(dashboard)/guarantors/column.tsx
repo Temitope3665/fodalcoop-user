@@ -1,3 +1,4 @@
+'use client';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { Eye, Trash2 } from 'lucide-react';
