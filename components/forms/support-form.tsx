@@ -179,7 +179,7 @@ export default function SupportForm() {
                         <UploadFileIcon />
                       )}
                       <p className="font-light">
-                        Drag files her to upload or{' '}
+                        Drag files here to upload or{' '}
                         <span className="text-primary font-semibold">
                           click to browse
                         </span>
@@ -211,3 +211,6 @@ export default function SupportForm() {
     </Form>
   );
 }
+
+// Repayment type before amount
+// Interest

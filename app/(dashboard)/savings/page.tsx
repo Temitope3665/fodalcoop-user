@@ -27,9 +27,7 @@ export default function Savings() {
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle className="-space-y-1">
-                <h1>Savings deposit</h1>
-              </SheetTitle>
+              <SheetTitle>Savings deposit</SheetTitle>
               <SheetDescription className="pt-4 px-2 text-left">
                 <SavingsDepositForm setOpen={setOpen} />
               </SheetDescription>

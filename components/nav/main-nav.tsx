@@ -7,7 +7,7 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { MessageIcon, UserProfileIcon } from '@/assets/svgs';
-import { Info, LogOut, Settings } from 'lucide-react';
+import { Headset, Info, LogOut, Settings } from 'lucide-react';
 import { SETTINGS_URL, SUPPORT_URL } from '@/config/paths';
 import { ReactNode } from 'react';
 import Link from 'next/link';
@@ -57,7 +57,7 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
                         'bg-accent text-accent-foreground'
                     )}
                   >
-                    <Settings className="mr-2 h-4 w-4" />
+                    {item.icon}
                     <span className="text-sm font-light">{item.title}</span>
                   </DropdownMenuItem>
                 </Link>
@@ -86,7 +86,7 @@ const navItems: { title: string; href: string; icon: ReactNode }[] = [
   {
     title: 'Support',
     href: SUPPORT_URL,
-    icon: <Info className="mr-2 h-4 w-4" />,
+    icon: <Headset className="mr-2 h-4 w-4" />,
   },
   {
     title: 'Logout',

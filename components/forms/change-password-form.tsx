@@ -26,15 +26,20 @@ import { useMutation } from '@tanstack/react-query';
 import { updatePassword } from '@/config/apis/profile';
 import { ErrorMessages } from '../showError';
 
-export const passwordSchema = z.object({
-  currentPassword: z
-    .string()
-    .min(1, { message: 'Current password is required' }),
-  password: z.string().min(1, { message: 'New password is required' }),
-  confirmPassword: z
-    .string()
-    .min(1, { message: 'Confirm password is required' }),
-});
+export const passwordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, { message: 'Current password is required' }),
+    password: z.string().min(1, { message: 'New password is required' }),
+    confirmPassword: z
+      .string()
+      .min(1, { message: 'Confirm password is required' }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords must match',
+    path: ['confirmPassword'], // This will attach the error message to the confirmPassword field
+  });
 
 export default function ChangePasswordForm() {
   const [errorField, setErrorField] = React.useState<any | null>(null);
@@ -69,6 +74,7 @@ export default function ChangePasswordForm() {
   });
 
   function onSubmit(data: z.infer<typeof passwordSchema>) {
+    setErrorField(null);
     mutate(data);
   }
 

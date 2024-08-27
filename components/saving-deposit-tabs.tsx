@@ -20,22 +20,22 @@ import {
 } from '@/components/ui/sheet';
 import { columns } from '@/app/(dashboard)/savings/column/standard-savings-column';
 import { useQuery } from '@tanstack/react-query';
-import { getStandardSavings } from '@/config/apis/savings';
+import { getDepositLogs, getStandardSavings } from '@/config/apis/savings';
 import { SAVINGS_EP, TARGET_SAVINGS_EP } from '@/config/endpoints';
 import {
   DEPOSIT_LOG_KEY,
-  NEW_SAVINGS_REQUESTS_KEY,
   STANDARD_SAVINGS_KEY,
   TARGETED_SAVINGS_KEY,
 } from '@/lib/query-keys';
 import { TableSkeleton } from './loaders';
+import { logColumns } from '@/app/(dashboard)/savings/column/deposit-log-columns';
 
 export const SavingTableTabs = () => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState<boolean>(false);
-  const currentTab = searchParams.get('tab') || SAVINGS_EP + '/profile';
+  const currentTab = searchParams.get('tab') || 'deposit-logs';
 
   const handleFilter = useDebouncedCallback((tab: string) => {
     const params = new URLSearchParams(searchParams);
@@ -50,18 +50,6 @@ export const SavingTableTabs = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryFn: () => getStandardSavings(SAVINGS_EP),
     queryKey: [STANDARD_SAVINGS_KEY],
-    enabled: currentTab === SAVINGS_EP,
-  });
-
-  const {
-    data: data1,
-    isLoading: isLoading1,
-    isError: isError1,
-    error: error1,
-  } = useQuery({
-    queryFn: () => getStandardSavings(SAVINGS_EP + '/profile'),
-    queryKey: [NEW_SAVINGS_REQUESTS_KEY],
-    enabled: currentTab === SAVINGS_EP + '/profile',
   });
 
   const {
@@ -72,7 +60,6 @@ export const SavingTableTabs = () => {
   } = useQuery({
     queryFn: () => getStandardSavings(TARGET_SAVINGS_EP),
     queryKey: [TARGETED_SAVINGS_KEY],
-    enabled: currentTab === TARGET_SAVINGS_EP,
   });
 
   const {
@@ -81,15 +68,15 @@ export const SavingTableTabs = () => {
     isError: isError3,
     error: error3,
   } = useQuery({
-    queryFn: () => getStandardSavings(SAVINGS_EP + '/deposit-logs'),
+    queryFn: getDepositLogs,
     queryKey: [DEPOSIT_LOG_KEY],
-    enabled: currentTab === SAVINGS_EP + '/deposit-logs',
   });
 
   const records = data?.data || [];
-  const records1 = data1?.data || [];
   const records2 = data2?.data || [];
-  const records3 = data3?.data || [];
+  const records3 = data3 || [];
+
+  console.log(data3);
 
   const tabs: {
     title: string;
@@ -99,39 +86,30 @@ export const SavingTableTabs = () => {
     endpoint: string;
   }[] = [
     {
-      title: 'Deposit request',
-      value: records1 && records1?.length,
-      endpoint: SAVINGS_EP + '/profile',
-      data: records1,
-      columns: columns,
-    },
-    {
-      title: 'Standard savings',
-      endpoint: SAVINGS_EP,
-      value: records && records?.length,
-      data: records,
-      columns: columns,
+      title: 'Deposit Logs',
+      endpoint: 'deposit-logs',
+      value: records3 && records3?.length,
+      data: records3,
+      columns: logColumns,
     },
     {
       title: 'Targeted savings',
       value: records2 && records2?.length,
-      endpoint: TARGET_SAVINGS_EP,
+      endpoint: 'target-savings',
       data: records2,
       columns: columns,
     },
     {
-      title: 'Deposit Logs',
-      endpoint: SAVINGS_EP + '/deposit-logs',
-      value: records3 && records3?.length,
-      data: records3,
+      title: 'Standard savings',
+      endpoint: 'standard-savings',
+      value: records && records?.length,
+      data: records,
       columns: columns,
     },
   ];
 
-  if (isError || isError1 || isError2 || isError3) {
-    throw new Error(
-      error?.message || error1?.message || error2?.message || error3?.message
-    );
+  if (isError || isError2 || isError3) {
+    throw new Error(error?.message || error2?.message || error3?.message);
   }
 
   return (
@@ -213,7 +191,7 @@ export const SavingTableTabs = () => {
             </div>
 
             <div className="">
-              {isLoading || isLoading1 || isLoading2 || isLoading3 ? (
+              {isLoading || isLoading2 || isLoading3 ? (
                 <TableSkeleton />
               ) : (
                 <DataTable

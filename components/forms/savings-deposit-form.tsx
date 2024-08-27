@@ -44,9 +44,21 @@ import {
 import { Label } from '../ui/label';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getBanks } from '@/config/apis/dashboard';
-import { BANKS_KEY } from '@/lib/query-keys';
-import { depositSavings } from '@/config/apis/savings';
+import {
+  BANKS_KEY,
+  DEPOSIT_LOG_KEY,
+  NEW_SAVINGS_REQUESTS_KEY,
+  SAVINGS_PROFILE_KEY,
+  STANDARD_SAVINGS_KEY,
+  TARGETED_SAVINGS_KEY,
+} from '@/lib/query-keys';
+import {
+  depositSavings,
+  getSavingsProfile,
+  getStandardSavings,
+} from '@/config/apis/savings';
 import { ErrorMessages } from '../showError';
+import { Landmark } from 'lucide-react';
 
 export const savingsDepositSchema = z.object({
   savingsType: z.string().min(1, { message: 'Savings type is required' }),
@@ -62,14 +74,15 @@ export default function SavingsDepositForm({
   setOpen: (arg: boolean) => void;
 }) {
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
-  const queryClient = useQueryClient();
+  const [selectedMethod, setSelectedMethod] = React.useState<string>('');
+  const queryClient: any = useQueryClient();
   const [errorField, setErrorField] = React.useState<any | null>(null);
   const form = useForm<z.infer<typeof savingsDepositSchema>>({
     resolver: zodResolver(savingsDepositSchema),
     defaultValues: {
       savingsType: '',
       narration: '',
-      paymentOption: '',
+      paymentOption: 'bank',
       selectAccount: '',
       amount: '',
     },
@@ -80,23 +93,36 @@ export default function SavingsDepositForm({
     queryKey: [BANKS_KEY],
   });
 
-  const paymentMethods: { name: string; icon: React.ReactNode }[] = [
+  const {
+    data: data1,
+    isLoading: isLoading1,
+    isError: isError1,
+  } = useQuery({
+    queryFn: getSavingsProfile,
+    queryKey: [SAVINGS_PROFILE_KEY],
+  });
+
+  console.log(data1, '-> ');
+
+  const paymentMethods: {
+    name: string;
+    icon: React.ReactNode;
+  }[] = [
     {
-      name: 'Cash payment',
-      icon: <CashDepositIcon className="mx-auto" />,
+      name: 'Bank',
+      icon: <Landmark className="mx-auto" />,
     },
     {
-      name: 'Transfer/Deposit',
-      icon: <TransferDepositIcon className="mx-auto" />,
+      name: 'Cash',
+      icon: <CashDepositIcon className="mx-auto" />,
     },
   ];
 
   const { mutate, isPending } = useMutation({
     mutationFn: depositSavings,
     onSuccess: () => {
-      setOpen(false);
       setOpenDialog(true);
-      // queryClient.invalidateQueries()
+      queryClient.invalidateQueries(DEPOSIT_LOG_KEY);
     },
     onError: (error: any) =>
       setErrorField(
@@ -104,170 +130,211 @@ export default function SavingsDepositForm({
       ),
   });
 
+  React.useEffect(() => {
+    const paymentMethod = form.watch((value, { name, type }) => {
+      setSelectedMethod(value.paymentOption || '');
+    });
+    return () => paymentMethod.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.watch]);
+
   function onSubmit(data: z.infer<typeof savingsDepositSchema>) {
+    console.log(data);
+    setErrorField('');
     mutate(data);
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-        <ErrorMessages errors={errorField} setErrors={setErrorField} />
-        <FormField
-          control={form.control}
-          name="savingsType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Select a savings type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select savings type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {loanType.map((loan) => (
-                    <SelectItem value={loan.type}>{loan.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+          <ErrorMessages errors={errorField} setErrors={setErrorField} />
+          <FormField
+            control={form.control}
+            name="savingsType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select a savings type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select savings type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {isLoading1 ? (
+                      <p className="text-sm font-light px-4 py-2 italic">
+                        Loading types...
+                      </p>
+                    ) : (
+                      <React.Fragment>
+                        {data1?.map((each) => (
+                          <SelectItem value={each.id.toString()}>
+                            {each.name}
+                          </SelectItem>
+                        ))}
+                      </React.Fragment>
+                    )}
+                    {isError1 && (
+                      <p className="text-sm font-light italic p-3 text-destructive">
+                        Can't fetch type at the moment
+                      </p>
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Enter amount to pay</FormLabel>
-              <FormControl className="relative">
-                <FormGroup>
-                  <p className="absolute pl-3 right-10 text-[#888888]">NGN</p>
-                  <Input
-                    placeholder="200,000"
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Enter amount to pay</FormLabel>
+                <FormControl className="relative">
+                  <FormGroup>
+                    <p className="absolute pl-3 right-10 text-[#888888]">NGN</p>
+                    <Input
+                      placeholder="200,000"
+                      className="pr-6"
+                      type="number"
+                      invalid={fieldState.invalid}
+                      {...field}
+                    />
+                  </FormGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="narration"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Narration</FormLabel>
+                <FormControl className="relative">
+                  <Textarea
+                    placeholder="Enter narration here"
                     className="pr-6"
-                    type="number"
                     invalid={fieldState.invalid}
                     {...field}
                   />
-                </FormGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="narration"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Narration</FormLabel>
-              <FormControl className="relative">
-                <Textarea
-                  placeholder="200,000"
-                  className="pr-6"
-                  invalid={fieldState.invalid}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="selectAccount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Select bank</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your bank" />
-                  </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  {isLoading ? (
-                    <p className="text-sm font-light italic p-3">
-                      Loading banks
-                    </p>
-                  ) : (
-                    <React.Fragment>
-                      {data?.map((each) => (
-                        <SelectItem
-                          value={each.id.toString()}
-                          key={each.accountNumber}
-                        >
-                          {`${each.bank.name} - ${each.accountNumber}`}
-                        </SelectItem>
-                      ))}
-                    </React.Fragment>
-                  )}
-                  {isError && (
-                    <p className="text-sm font-light italic p-3 text-destructive">
-                      Can't fetch banks at the moment
-                    </p>
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="paymentOption"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <Label>Select payment method</Label>
-              <div className="grid grid-cols-2 gap-4 text-sm font-light text-center w-full">
-                {paymentMethods.map((method) => (
-                  <div
-                    key={method.name}
-                    role="button"
-                    className={cn(
-                      'bg-[#FAFAFA] px-4 py-4 lg:py-6 rounded-sm border space-y-1 trans',
-                      form.getValues('paymentOption') === method.name &&
-                        'border-primary',
-                      fieldState.error?.message && 'border-destructive'
-                    )}
-                    onClick={() => {
-                      form.setValue('paymentOption', method.name);
-                      form.setError('paymentOption', { message: '' });
-                    }}
+          <FormField
+            control={form.control}
+            name="paymentOption"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <Label>Select payment method</Label>
+                <div className="grid grid-cols-2 gap-6 text-sm font-light text-center w-full">
+                  {paymentMethods.map((method) => (
+                    <button
+                      key={method.name}
+                      role="button"
+                      type="button"
+                      className={cn(
+                        'bg-[#FAFAFA] px-4 py-2 lg:py-2 rounded-sm border space-y-1 trans text-primary',
+                        field.value.toLowerCase() ===
+                          method.name.toLowerCase() && 'border-primary',
+                        fieldState.error?.message && 'border-destructive'
+                      )}
+                      onClick={() => {
+                        form.setValue(
+                          'paymentOption',
+                          method.name.toLowerCase()
+                        );
+                        form.setError('paymentOption', { message: '' });
+                      }}
+                      disabled={
+                        field.value.toLowerCase() !== method.name.toLowerCase()
+                      }
+                    >
+                      <div className="mx-auto text-center">{method.icon}</div>
+                      <p>{method.name}</p>
+                    </button>
+                  ))}
+                </div>
+              </FormItem>
+            )}
+          />
+          {form.getValues('paymentOption') === 'bank' && (
+            <FormField
+              control={form.control}
+              name="selectAccount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Select bank</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
                   >
-                    <div className="mx-auto text-center">{method.icon}</div>
-                    <p>{method.name}</p>
-                  </div>
-                ))}
-              </div>
-            </FormItem>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your bank" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {isLoading ? (
+                        <p className="text-sm font-light italic p-3">
+                          Loading banks
+                        </p>
+                      ) : (
+                        <React.Fragment>
+                          {data?.map((each) => (
+                            <SelectItem
+                              value={each.id.toString()}
+                              key={each.accountNumber}
+                            >
+                              {`${each.bank.name} - ${each.accountNumber}`}
+                            </SelectItem>
+                          ))}
+                        </React.Fragment>
+                      )}
+                      {isError && (
+                        <p className="text-sm font-light italic p-3 text-destructive">
+                          Can't fetch banks at the moment
+                        </p>
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
 
-        <div className="flex space-x-4">
-          <Button
-            variant="outline"
-            type="button"
-            className="w-full"
-            onClick={() => setOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            pending={isPending}
-            pendingText="Please wait..."
-            className="w-full"
-          >
-            Save
-          </Button>
-        </div>
-      </form>
+          <div className="flex space-x-4">
+            <Button
+              variant="outline"
+              type="button"
+              className="w-full"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              pending={isPending}
+              pendingText="Please wait..."
+              className="w-full"
+            >
+              Save
+            </Button>
+          </div>
+        </form>
+      </Form>
 
       <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
         <AlertDialogContent className="sm:w-[380px]">
@@ -290,7 +357,10 @@ export default function SavingsDepositForm({
                   className="w-full"
                   pending={isPending}
                   pendingText="Please wait..."
-                  onClick={() => setOpenDialog(false)}
+                  onClick={() => {
+                    setOpen(false);
+                    setOpenDialog(false);
+                  }}
                 >
                   Complete
                 </Button>
@@ -299,6 +369,6 @@ export default function SavingsDepositForm({
           </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
-    </Form>
+    </div>
   );
 }

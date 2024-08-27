@@ -15,18 +15,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { formatCurrency, formatDate2 } from '@/lib/utils';
 
-interface EachStatus {
-  Active: ReactNode;
-  Canceled: ReactNode;
-  Pending: ReactNode;
-}
-
 interface RowData {
-  status: keyof EachStatus;
-  // Add other properties of row.original here
+  payment_status: {
+    name: 'Active' | 'Canceled' | 'Pending';
+  };
 }
 
-export const columns: {
+interface StatusCellProps {
+  row: {
+    original: RowData;
+  };
+}
+
+export const logColumns: {
   accessorKey: string;
   header: any;
   key: string;
@@ -71,73 +72,59 @@ export const columns: {
     key: 'id',
   },
   {
-    accessorKey: 'monthly_deduction',
-    header: 'Monthly Deduction (₦)',
-    key: 'monthly_deduction',
+    accessorKey: 'amount',
+    header: 'Amount (₦)',
+    key: 'amount',
     cell: ({ row }: any) => {
-      const { monthly_deduction } = row.original;
-      return <p className="">{formatCurrency(monthly_deduction)}</p>;
+      const { amount } = row.original;
+      return <p className="">{formatCurrency(amount)}</p>;
     },
   },
   {
-    accessorKey: 'source',
-    header: 'Source',
-    key: 'source',
+    accessorKey: 'month',
+    header: 'Month',
+    key: 'month',
+  },
+  {
+    accessorKey: 'paymentMethod',
+    header: 'Payment Method',
+    key: 'paymentMethod',
     cell: ({ row }: any) => {
-      const { savings_product } = row.original;
-      return <p className="">{savings_product.name}</p>;
+      const { paymentMethod } = row.original;
+      return <p className="capitalize">{paymentMethod}</p>;
     },
   },
   {
-    accessorKey: 'target_amount',
-    header: 'Target Amount (₦)',
-    key: 'target_amount',
+    accessorKey: 'narration',
+    header: 'Narration',
+    key: 'narration',
     cell: ({ row }: any) => {
-      const { target_amount } = row.original;
-      return <p className="">{formatCurrency(target_amount)}</p>;
+      const { narration } = row.original;
+      return <p className="capitalize multiline-truncate">{narration}</p>;
     },
   },
   {
-    accessorKey: 'target_reached',
-    header: 'Target Reached (₦)',
-    key: 'target_reached',
+    accessorKey: 'savings_profile',
+    header: 'Savings Profile',
+    key: 'savings_profile',
     cell: ({ row }: any) => {
-      const { target_reached } = row.original;
-      return <p className="">{target_reached}</p>;
+      const { savings_profile } = row.original;
+      return <p className="">{savings_profile.name}</p>;
     },
   },
   {
-    accessorKey: 'total_payout',
-    header: 'Total Payout (₦)',
-    key: 'total_payout',
-    cell: ({ row }: any) => {
-      const { total_payout } = row.original;
-      return <p className="">{total_payout}</p>;
-    },
+    accessorKey: 'payment_status',
+    header: 'Status',
+    key: 'payment_status',
+    cell: ({ row }: any) => <StatusCell row={row} />,
   },
-  // {
-  //   accessorKey: 'newBalance',
-  //   header: 'New Balance (₦)',
-  //   key: 'newBalance',
-  // },
-  // {
-  //   accessorKey: 'newBalance',
-  //   header: 'New Balance (₦)',
-  //   key: 'newBalance',
-  // },
-  // {
-  //   accessorKey: 'status',
-  //   header: 'Status',
-  //   key: 'status',
-  //   cell: ({ row }: any) => <StatusCell row={row} />,
-  // },
   {
-    accessorKey: 'start_date',
-    header: 'Start Date',
-    key: 'start_date',
+    accessorKey: 'created_at',
+    header: 'Date Created',
+    key: 'created_at',
     cell: ({ row }: any) => {
-      const { start_date } = row.original;
-      return <p className="">{start_date}</p>;
+      const { created_at } = row.original;
+      return <p className="">{formatDate2(created_at)}</p>;
     },
   },
   // {
@@ -150,7 +137,7 @@ export const columns: {
 
 export const LoanActionCell = ({ row }: any) => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const { orderID } = row.original;
+
   return (
     <div className="flex items-center">
       <div className="hover:bg-[#E8F9FF] p-2 rounded-full" role="button">
@@ -195,9 +182,10 @@ export const LoanActionCell = ({ row }: any) => {
 };
 
 export const StatusCell = ({ row }: any) => {
-  const { status } = row.original as RowData;
+  const { payment_status } = row.original;
+  const status = payment_status.name;
 
-  const eachStatus: EachStatus = {
+  const eachStatus: Record<typeof status, JSX.Element> = {
     Active: (
       <div className="text-[#25D366] bg-[#25D3661A] w-fit rounded-lg px-4 py-1">
         Active

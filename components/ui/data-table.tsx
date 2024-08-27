@@ -74,7 +74,7 @@ DataTableProps) => {
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="h-[40vh]">
+        <TableBody className="">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -86,7 +86,7 @@ DataTableProps) => {
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className="capitalize py-4 text-xs font-light text-[#444444]"
+                    className="capitalize text-xs font-light text-[#444444]"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
@@ -95,7 +95,7 @@ DataTableProps) => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns?.length} className="h-24 text-center">
+              <TableCell colSpan={columns?.length} className="h-48 text-center">
                 <EmptyComponent
                   title="No data found"
                   className="mt-0"

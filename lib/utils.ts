@@ -1,5 +1,6 @@
 import { IDefaultUser } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
+import { format, parseISO } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -62,3 +63,21 @@ export function converBase64ToFile(base64: string) {
 
 export const phoneNumberPattern =
   /^(?:(?:\+234)|(?:0))(70|80|90|81|91|1)\d{7,8}$/;
+
+export const formatDate2 = (dateString: string) => {
+  if (dateString) {
+    const date = parseISO(dateString);
+    const formattedDate = format(date, 'MMM d, yyyy');
+    return formattedDate;
+  } else {
+    return '-';
+  }
+};
+
+export function formatCurrency(value: string) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'decimal',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(Number(value));
+}
