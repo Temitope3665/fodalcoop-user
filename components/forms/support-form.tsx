@@ -31,39 +31,44 @@ import { wait } from '@/lib/utils';
 import { loanType } from '@/config/loan-config';
 import { Textarea } from '../ui/textarea';
 import { UploadFileIcon } from '@/assets/svgs';
+import { useMutation } from '@tanstack/react-query';
+import { composeMessage } from '@/config/apis/dashboard';
+import { toast } from 'sonner';
+import { ErrorMessages } from '../showError';
 
 export const formSchema = z.object({
-  category: z.string().min(1, { message: 'Category is required' }),
+  // category: z.string().min(1, { message: 'Category is required' }),
   subject: z.string().min(1, { message: 'Subject is required' }),
   message: z.string().min(1, { message: 'Message is required' }),
   file: z.any(),
 });
 
 export default function SupportForm() {
-  const router = useRouter();
+  const [errorField, setErrorField] = React.useState<any | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      category: '',
+      // category: '',
       subject: '',
       message: '',
       file: '',
     },
   });
+  const [file, setFile] = React.useState('');
   const [selectedItem, setSelectedItem] = React.useState(loanType[0]);
-  const [isPending, setIsPending] = React.useState(false);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const maxSize: number = 3 * 1024 * 1024;
+    const maxSize: number = 5 * 1024 * 1024;
     const file: any = e.target.files?.[0];
     if (file.size >= maxSize) {
-      console.error('File is too large. Max size of 3mb');
+      console.error('File is too large. Max size of 5MB');
     } else {
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
           const result = reader.result as string;
-          form.setValue('file', result);
+          form.setValue('file', file);
+          setFile(result);
           form.clearErrors('file');
         };
         reader.readAsDataURL(file);
@@ -71,11 +76,20 @@ export default function SupportForm() {
     }
   };
 
-  function onSubmit() {
-    setIsPending(true);
-    wait().then(() => {
-      setIsPending(false);
-    });
+  const { mutate, isPending } = useMutation({
+    mutationFn: composeMessage,
+    onSuccess: async (response) => {
+      toast.success(response.message);
+      form.reset();
+    },
+    onError: (error: any) =>
+      setErrorField(
+        error.response.data.errors || { Error: [error.response.data.error] }
+      ),
+  });
+
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    mutate(data);
   }
 
   return (
@@ -85,7 +99,8 @@ export default function SupportForm() {
         className="grid gap-4 w-[50%]"
       >
         <h1 className="font-semibold">New Message</h1>
-        <FormField
+        <ErrorMessages errors={errorField} setErrors={setErrorField} />
+        {/* <FormField
           control={form.control}
           name="category"
           render={({ field, fieldState }) => (
@@ -111,7 +126,7 @@ export default function SupportForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
@@ -123,7 +138,7 @@ export default function SupportForm() {
                 <FormGroup>
                   <Input
                     placeholder="Hello everybody"
-                    className=""
+                    className="placeholder:text-[14px]"
                     invalid={fieldState.invalid}
                     {...field}
                   />
@@ -136,7 +151,7 @@ export default function SupportForm() {
 
         <FormField
           control={form.control}
-          name="subject"
+          name="message"
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel className="font-light">Write your message</FormLabel>
@@ -170,9 +185,9 @@ export default function SupportForm() {
                       {field.value ? (
                         <div className="">
                           <img
-                            src={field.value}
+                            src={file}
                             alt="image"
-                            className="w-10 h-10 rounded-full object-cover"
+                            className="w-16 h-16 rounded-full object-cover"
                           />
                         </div>
                       ) : (
@@ -202,7 +217,7 @@ export default function SupportForm() {
         <Button
           type="submit"
           pending={isPending}
-          pendingText="Please wait"
+          pendingText="Please wait..."
           className="w-full font-light"
         >
           Send message

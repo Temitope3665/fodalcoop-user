@@ -43,7 +43,7 @@ export default function Messages() {
   return (
     <div className="w-full mt-2">
       <Tabs defaultValue="inbox" onValueChange={setMessageType}>
-        <TabsList>
+        <TabsList className="w-full">
           <TabsTrigger value="inbox">Inbox</TabsTrigger>
           <TabsTrigger value="outbox">Outbox</TabsTrigger>
         </TabsList>
@@ -82,7 +82,7 @@ export const EachMessage = ({
 
   if (isLoading) return <MessagesLoading />;
   return (
-    <div>
+    <div className="pb-4">
       {data?.length === 0 ? (
         <div className="mx-auto w-full text-center space-y-3">
           <EmptyComponent
