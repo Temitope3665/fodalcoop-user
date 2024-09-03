@@ -18,7 +18,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { columns } from '@/app/(dashboard)/savings/column/standard-savings-column';
+import { columns } from '@/app/(dashboard)/savings/column/targeted-savings-column';
 import { useQuery } from '@tanstack/react-query';
 import { getDepositLogs, getStandardSavings } from '@/config/apis/savings';
 import { SAVINGS_EP, TARGET_SAVINGS_EP } from '@/config/endpoints';
@@ -29,6 +29,7 @@ import {
 } from '@/lib/query-keys';
 import { TableSkeleton } from './loaders';
 import { logColumns } from '@/app/(dashboard)/savings/column/deposit-log-columns';
+import { standardSavingsColumn } from '@/app/(dashboard)/savings/column/standard-savings-column';
 
 export const SavingTableTabs = () => {
   const pathname = usePathname();
@@ -76,7 +77,7 @@ export const SavingTableTabs = () => {
   const records2 = data2?.data || [];
   const records3 = data3 || [];
 
-  console.log(data3);
+  console.log(records, 'records');
 
   const tabs: {
     title: string;
@@ -104,7 +105,7 @@ export const SavingTableTabs = () => {
       endpoint: 'standard-savings',
       value: records && records?.length,
       data: records,
-      columns: columns,
+      columns: standardSavingsColumn,
     },
   ];
 
@@ -198,7 +199,7 @@ export const SavingTableTabs = () => {
                   data={tab.data}
                   columns={tab.columns}
                   dataSize={tab.data.length}
-                  pageSize={5}
+                  pageSize={10}
                 />
               )}
             </div>

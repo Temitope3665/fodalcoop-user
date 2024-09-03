@@ -17,7 +17,7 @@ import { formatCurrency, formatDate2 } from '@/lib/utils';
 
 interface EachStatus {
   Active: ReactNode;
-  Canceled: ReactNode;
+  Declined: ReactNode;
   Pending: ReactNode;
 }
 
@@ -26,7 +26,7 @@ interface RowData {
   // Add other properties of row.original here
 }
 
-export const columns: {
+export const standardSavingsColumn: {
   accessorKey: string;
   header: any;
   key: string;
@@ -71,74 +71,46 @@ export const columns: {
     key: 'id',
   },
   {
-    accessorKey: 'monthly_deduction',
-    header: 'Monthly Deduction (₦)',
-    key: 'monthly_deduction',
+    accessorKey: 'amount',
+    header: 'Amount(₦)',
+    key: 'amount',
     cell: ({ row }: any) => {
-      const { monthly_deduction } = row.original;
-      return <p className="">{formatCurrency(monthly_deduction)}</p>;
+      const { amount } = row.original;
+      return <p className="">{formatCurrency(amount)}</p>;
     },
   },
   {
-    accessorKey: 'source',
-    header: 'Source',
-    key: 'source',
+    accessorKey: 'month',
+    header: 'Month',
+    key: 'month',
     cell: ({ row }: any) => {
-      const { savings_product } = row.original;
-      return <p className="">{savings_product.name}</p>;
+      const { month } = row.original;
+      return <p className="">{month.name}</p>;
     },
   },
   {
-    accessorKey: 'target_amount',
-    header: 'Target Amount (₦)',
-    key: 'target_amount',
+    accessorKey: 'payment_source',
+    header: 'Payment Source',
+    key: 'payment_source',
     cell: ({ row }: any) => {
-      const { target_amount } = row.original;
-      return <p className="">{formatCurrency(target_amount)}</p>;
+      const { payment_source } = row.original;
+      return <p className="">{payment_source.name}</p>;
     },
   },
   {
-    accessorKey: 'target_reached',
-    header: 'Target Reached (₦)',
-    key: 'target_reached',
+    accessorKey: 'payment_date',
+    header: 'Payment Date',
+    key: 'payment_date',
     cell: ({ row }: any) => {
-      const { target_reached } = row.original;
-      return <p className="">{target_reached}</p>;
+      const { payment_date } = row.original;
+      return <p className="">{payment_date}</p>;
     },
   },
   {
-    accessorKey: 'total_payout',
-    header: 'Total Payout (₦)',
-    key: 'total_payout',
-    cell: ({ row }: any) => {
-      const { total_payout } = row.original;
-      return <p className="">{total_payout}</p>;
-    },
-  },
-  // {
-  //   accessorKey: 'newBalance',
-  //   header: 'New Balance (₦)',
-  //   key: 'newBalance',
-  // },
-  // {
-  //   accessorKey: 'newBalance',
-  //   header: 'New Balance (₦)',
-  //   key: 'newBalance',
-  // },
-  // {
-  //   accessorKey: 'status',
-  //   header: 'Status',
-  //   key: 'status',
-  //   cell: ({ row }: any) => <StatusCell row={row} />,
-  // },
-  {
-    accessorKey: 'start_date',
-    header: 'Start Date',
-    key: 'start_date',
-    cell: ({ row }: any) => {
-      const { start_date } = row.original;
-      return <p className="">{start_date}</p>;
-    },
+    accessorKey: 'payment_status',
+    header: 'Status',
+    key: 'payment_status',
+    cell: ({ row }: any) => <StatusCell row={row} />,
   },
   // {
   //   accessorKey: 'action',
@@ -195,22 +167,23 @@ export const LoanActionCell = ({ row }: any) => {
 };
 
 export const StatusCell = ({ row }: any) => {
-  const { status } = row.original as RowData;
+  const { payment_status } = row.original;
+  const status = payment_status.name;
 
-  const eachStatus: EachStatus = {
-    Active: (
+  const eachStatus: Record<typeof status, JSX.Element> = {
+    Approved: (
       <div className="text-[#25D366] bg-[#25D3661A] w-fit rounded-lg px-4 py-1">
-        Active
+        Approved
       </div>
     ),
-    Canceled: (
+    Declined: (
       <div className="text-[#DE1D3E] bg-[#F8D2D81A] w-fit rounded-lg px-4 py-1">
-        Canceled
+        Declined
       </div>
     ),
-    Pending: (
-      <div className="text-[#F79E1B] bg-[#F79E1B1A] w-fit rounded-lg px-4 py-1">
-        Pending
+    Running: (
+      <div className="text-white bg-primary w-fit rounded-lg px-4 py-1">
+        Running
       </div>
     ),
   };

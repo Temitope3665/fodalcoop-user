@@ -26,7 +26,7 @@ export const readMessage = (messageId: string): Promise<ApiResponse> =>
     .then((response) => response.data);
 
 export const getDashboardGuarantorRequest = (): Promise<{
-  data: { name: string; phone: string; liability: string }[];
+  data: { name: string; phone: string; liability: string; id: number }[];
 }> =>
   client
     .get(`${LOAN_GUARANTOR_EP}/incoming-home`)

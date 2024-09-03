@@ -1,8 +1,5 @@
-import { Checkbox } from '@/components/ui/checkbox';
-
 import { Eye, Trash2 } from 'lucide-react';
-import { ReactNode, useState } from 'react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useState } from 'react';
 
 import {
   Dialog,
@@ -15,17 +12,6 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-interface EachStatus {
-  Active: ReactNode;
-  Canceled: ReactNode;
-  Pending: ReactNode;
-}
-
-interface RowData {
-  status: keyof EachStatus;
-  // Add other properties of row.original here
-}
-
 export const repaymentColumns: {
   accessorKey: string;
   header: any;
@@ -33,45 +19,39 @@ export const repaymentColumns: {
   cell?: any;
 }[] = [
   {
-    accessorKey: 'select',
-    header: ({ table }: any) => {
-      return (
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="selectAll"
-            aria-label="Select all"
-            className="translate-y-[2px]"
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-          />
-        </div>
-      );
+    accessorKey: 'loan_id',
+    header: 'Loan ID',
+    key: 'loan_id',
+    cell: ({ row }: any) => {
+      const { loan_id } = row.original;
+      return <p className="font-bold">{loan_id}</p>;
     },
-    key: 'select',
-    cell: ({ row }: any) => (
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="selectAll"
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="translate-y-[2px]"
-        />
-      </div>
-    ),
   },
   {
-    accessorKey: 'loanID',
-    header: 'Loan ID',
-    key: 'loanID',
+    accessorKey: 'old_balance',
+    header: 'Old Balance (₦)',
+    key: 'old_balance',
     cell: ({ row }: any) => {
-      const { loanID } = row.original;
-      return <p className="font-bold">{loanID}</p>;
+      const { old_balance } = row.original;
+      return <p>{old_balance}</p>;
+    },
+  },
+  {
+    accessorKey: 'new_balance',
+    header: 'New Balance (₦)',
+    key: 'new_balance',
+    cell: ({ row }: any) => {
+      const { new_balance } = row.original;
+      return <p>{new_balance}</p>;
+    },
+  },
+  {
+    accessorKey: 'payment_source',
+    header: 'Payment Source',
+    key: 'payment_source',
+    cell: ({ row }: any) => {
+      const { payment_source } = row.original;
+      return <p>{payment_source.name}</p>;
     },
   },
   {
@@ -80,35 +60,28 @@ export const repaymentColumns: {
     key: 'amount',
     cell: ({ row }: any) => {
       const { amount } = row.original;
-      return <p className="font-bold">{amount}</p>;
+      return <p>{amount}</p>;
     },
   },
   {
     accessorKey: 'month',
     header: 'Month',
     key: 'month',
+    cell: ({ row }: any) => {
+      const { month } = row.original;
+      return <p>{month.name}</p>;
+    },
   },
   {
-    accessorKey: 'paymentMethod',
-    header: 'Payment Method',
-    key: 'paymentMethod',
-  },
-  {
-    accessorKey: 'status',
+    accessorKey: 'payment_status',
     header: 'Status',
-    key: 'status',
+    key: 'payment_status',
     cell: ({ row }: any) => <StatusCell row={row} />,
   },
   {
-    accessorKey: 'date',
-    header: 'Date',
-    key: 'date',
-  },
-  {
-    accessorKey: 'action',
-    header: '',
-    key: 'action',
-    cell: ({ row }: any) => <LoanActionCell row={row} />,
+    accessorKey: 'payment_date',
+    header: 'Payment Date',
+    key: 'payment_date',
   },
 ];
 
@@ -160,17 +133,18 @@ export const LoanActionCell = ({ row }: any) => {
 };
 
 export const StatusCell = ({ row }: any) => {
-  const { status } = row.original as RowData;
+  const { payment_status } = row.original;
+  const status = payment_status.name;
 
-  const eachStatus: EachStatus = {
-    Active: (
+  const eachStatus: Record<typeof status, JSX.Element> = {
+    Approved: (
       <div className="text-[#25D366] bg-[#25D3661A] w-fit rounded-lg px-4 py-1">
-        Active
+        Approved
       </div>
     ),
-    Canceled: (
+    Declined: (
       <div className="text-[#DE1D3E] bg-[#F8D2D81A] w-fit rounded-lg px-4 py-1">
-        Canceled
+        Declined
       </div>
     ),
     Pending: (

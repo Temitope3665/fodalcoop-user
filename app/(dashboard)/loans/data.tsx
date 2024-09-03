@@ -51,7 +51,7 @@ export const loanData: ILoanData[] = [
     source: 'Cooperative',
     oldBalance: '250,000.00',
     newBalance: '5,650,000.00',
-    status: 'Canceled',
+    status: 'Declined',
     date: 'Feb 25, 2023',
   },
   {
@@ -104,7 +104,7 @@ export const repaymentData: IRepaymentData[] = [
     amount: '5,400,000.00',
     month: 'Feb',
     paymentMethod: 'Cheque',
-    status: 'Canceled',
+    status: 'Declined',
     date: 'Feb 25, 2023',
   },
   {
@@ -165,7 +165,7 @@ export const applicationsData: IApplicationData[] = [
     loanProduct: '6 months',
     month: 'Feb',
     paymentMethod: 'Cheque',
-    status: 'Canceled',
+    status: 'Declined',
     date: 'Feb 25, 2023',
   },
   {

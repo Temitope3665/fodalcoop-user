@@ -8,14 +8,16 @@ import SearchInput from './ui/search-input';
 import DataTable from './ui/data-table';
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getGuarantors } from '@/config/apis/guarantor';
+import { getAllGuarantors, getGuarantors } from '@/config/apis/guarantor';
 import {
+  ALL_GUARANTOR_KEY,
   INCOMING_GUARANTOR_KEY,
   OUTGOING_GUARANTOR_KEY,
 } from '@/lib/query-keys';
 import { IGuarantorData } from '@/types';
 import { columns } from '@/app/(dashboard)/guarantors/column';
 import { TableSkeleton } from './loaders';
+import { incomingColumns } from '@/app/(dashboard)/guarantors/incoming-column';
 
 export const GuarantorTableTabs = () => {
   const pathname = usePathname();
@@ -36,7 +38,6 @@ export const GuarantorTableTabs = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryFn: () => getGuarantors('incoming'),
     queryKey: [INCOMING_GUARANTOR_KEY],
-    enabled: currentTab === 'incoming',
   });
 
   const {
@@ -47,11 +48,24 @@ export const GuarantorTableTabs = () => {
   } = useQuery({
     queryFn: () => getGuarantors('outgoing'),
     queryKey: [OUTGOING_GUARANTOR_KEY],
-    enabled: currentTab === 'outgoing',
   });
 
+  const {
+    data: data2,
+    isLoading: isLoading2,
+    isError: isError2,
+    error: error3,
+  } = useQuery({
+    queryFn: getAllGuarantors,
+    queryKey: [ALL_GUARANTOR_KEY],
+  });
+
+  const all = data2?.data || [];
   const incoming = data?.data || [];
   const outgoing = data1?.data || [];
+  console.log(incoming);
+
+  // console.log(data, 'data->');
 
   const tabs: {
     value: string | number;
@@ -63,7 +77,7 @@ export const GuarantorTableTabs = () => {
       type: 'incoming',
       value: incoming.length,
       data: incoming,
-      columns: columns,
+      columns: incomingColumns,
     },
     {
       type: 'outgoing',

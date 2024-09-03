@@ -17,7 +17,7 @@ import { formatCurrency, formatDate2 } from '@/lib/utils';
 
 interface RowData {
   payment_status: {
-    name: 'Active' | 'Canceled' | 'Pending';
+    name: 'Active' | 'Declined' | 'Pending';
   };
 }
 
@@ -72,20 +72,6 @@ export const logColumns: {
     key: 'id',
   },
   {
-    accessorKey: 'amount',
-    header: 'Amount (₦)',
-    key: 'amount',
-    cell: ({ row }: any) => {
-      const { amount } = row.original;
-      return <p className="">{formatCurrency(amount)}</p>;
-    },
-  },
-  {
-    accessorKey: 'month',
-    header: 'Month',
-    key: 'month',
-  },
-  {
     accessorKey: 'paymentMethod',
     header: 'Payment Method',
     key: 'paymentMethod',
@@ -102,6 +88,20 @@ export const logColumns: {
       const { narration } = row.original;
       return <p className="capitalize multiline-truncate">{narration}</p>;
     },
+  },
+  {
+    accessorKey: 'amount',
+    header: 'Amount (₦)',
+    key: 'amount',
+    cell: ({ row }: any) => {
+      const { amount } = row.original;
+      return <p className="">{formatCurrency(amount)}</p>;
+    },
+  },
+  {
+    accessorKey: 'month',
+    header: 'Month',
+    key: 'month',
   },
   {
     accessorKey: 'savings_profile',
@@ -191,9 +191,9 @@ export const StatusCell = ({ row }: any) => {
         Active
       </div>
     ),
-    Canceled: (
+    Declined: (
       <div className="text-[#DE1D3E] bg-[#F8D2D81A] w-fit rounded-lg px-4 py-1">
-        Canceled
+        Declined
       </div>
     ),
     Pending: (

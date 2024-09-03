@@ -74,10 +74,19 @@ export const formatDate2 = (dateString: string) => {
   }
 };
 
-export function formatCurrency(value: string) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(Number(value));
+export function formatCurrency(value: string | number | null) {
+  if (value) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(Number(value));
+  } else {
+    return null;
+  }
 }
+
+export const roundNumber = (num: number) => {
+  const rounded = Number(num.toFixed(1));
+  return rounded % 1 === 0 ? Math.round(rounded) : rounded;
+};

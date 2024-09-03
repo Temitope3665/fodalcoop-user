@@ -1,6 +1,4 @@
 'use client';
-import { tabs } from './data';
-import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import TableTabs from '@/components/loan-table-tabs';
 import { Button } from '@/components/ui/button';
@@ -18,9 +16,7 @@ import GuarantorForm from '@/components/forms/loans/guarantor-form';
 import ReviewForm from '@/components/forms/loans/review-form';
 
 export default function Loans() {
-  const searchParams = useSearchParams();
   const [open, setOpen] = React.useState<boolean>(false);
-  const currentTab: string = searchParams.get('q') || tabs[0].title;
   const [currentFormView, setCurrentFormView] = React.useState<number>(1);
 
   const eachView: any = {
@@ -36,14 +32,19 @@ export default function Loans() {
         setCurrentFormView={setCurrentFormView}
       />
     ),
-    3: <ReviewForm setCurrentFormView={setCurrentFormView} />,
+    3: (
+      <ReviewForm
+        setCurrentFormView={setCurrentFormView}
+        setOpenSheet={setOpen}
+      />
+    ),
   };
 
   return (
     <div className="px-4 py-2 space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-default font-semibold text-sm">Loans</h1>
-        <Sheet open={open} onOpenChange={setOpen}>
+        {/* <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button className="space-x-2 lg:hidden flex">
               <p>New loan request</p> <ArrowRightIcon />
@@ -62,10 +63,10 @@ export default function Loans() {
               </SheetDescription>
             </SheetHeader>
           </SheetContent>
-        </Sheet>
+        </Sheet> */}
       </div>
       <div className="py-4 border border-light rounded-lg bg-white overflow-y-auto min-h-[800px]">
-        <TableTabs currentTab={currentTab} tabs={tabs} />
+        <TableTabs />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 interface StoreTokenRequest {
   token: string;
@@ -76,4 +77,23 @@ export async function getUser() {
   }
 
   return null; // Return null if the cookie doesn't exist
+}
+
+export async function userLogoutAction() {
+  try {
+    const cookieStore = cookies();
+    const response = NextResponse.json({
+      message: 'Logout successful',
+      success: true,
+    }).json();
+    cookieStore.set('accessToken', '', {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+    cookieStore.set('user', '', { httpOnly: true, expires: new Date(0) });
+
+    return response;
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 }).json();
+  }
 }

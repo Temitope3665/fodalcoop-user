@@ -1,4 +1,3 @@
-'use client';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { Eye, Trash2 } from 'lucide-react';
@@ -17,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { formatCurrency, formatDate2 } from '@/lib/utils';
 
 interface EachStatus {
-  Approved: ReactNode;
+  Active: ReactNode;
   Declined: ReactNode;
   Pending: ReactNode;
 }
@@ -67,74 +66,101 @@ export const columns: {
   //   ),
   // },
   {
-    accessorKey: 'member',
-    header: 'Sender',
-    key: 'member',
+    accessorKey: 'id',
+    header: 'ID',
+    key: 'id',
+  },
+  {
+    accessorKey: 'monthly_deduction',
+    header: 'Monthly Deduction (₦)',
+    key: 'monthly_deduction',
     cell: ({ row }: any) => {
-      const { member } = row.original;
-      return (
-        <p className="font-bold">{`${member.firstName} ${member.lastName}`}</p>
-      );
+      const { monthly_deduction } = row.original;
+      return <p className="">{formatCurrency(monthly_deduction)}</p>;
     },
   },
   {
-    accessorKey: 'phone',
-    header: 'Phone',
-    key: 'phone',
+    accessorKey: 'source',
+    header: 'Source',
+    key: 'source',
     cell: ({ row }: any) => {
-      const { member } = row.original;
-      return <p className="font-bold">{member.phone}</p>;
+      const { savings_product } = row.original;
+      return <p className="">{savings_product.name}</p>;
     },
   },
   {
-    accessorKey: 'liability',
-    header: 'Liability (₦)',
-    key: 'liability',
+    accessorKey: 'target_amount',
+    header: 'Target Amount (₦)',
+    key: 'target_amount',
     cell: ({ row }: any) => {
-      const { liability } = row.original;
-      return <p className="font-bold">{formatCurrency(liability)}</p>;
+      const { target_amount } = row.original;
+      return <p className="">{formatCurrency(target_amount)}</p>;
     },
   },
   {
-    accessorKey: 'liability_accepted',
-    header: 'Liability Accepted',
-    key: 'liability_accepted',
+    accessorKey: 'target_reached',
+    header: 'Target Reached (₦)',
+    key: 'target_reached',
     cell: ({ row }: any) => {
-      const { liability_accepted } = row.original;
-      return <p className="">{liability_accepted || 'N/A'}</p>;
+      const { target_reached } = row.original;
+      return <p className="">{target_reached}</p>;
     },
-    // cell: ({ row }: any) => <StatusCell row={row} />,
   },
   {
-    accessorKey: 'created_at',
-    header: 'Date Created',
-    key: 'created_at',
+    accessorKey: 'total_payout',
+    header: 'Total Payout (₦)',
+    key: 'total_payout',
     cell: ({ row }: any) => {
-      const { created_at } = row.original;
-      return <p className="">{formatDate2(created_at || '') || 'N/A'}</p>;
+      const { total_payout } = row.original;
+      return <p className="">{total_payout}</p>;
+    },
+  },
+  // {
+  //   accessorKey: 'newBalance',
+  //   header: 'New Balance (₦)',
+  //   key: 'newBalance',
+  // },
+  // {
+  //   accessorKey: 'newBalance',
+  //   header: 'New Balance (₦)',
+  //   key: 'newBalance',
+  // },
+  // {
+  //   accessorKey: 'status',
+  //   header: 'Status',
+  //   key: 'status',
+  //   cell: ({ row }: any) => <StatusCell row={row} />,
+  // },
+  {
+    accessorKey: 'start_date',
+    header: 'Start Date',
+    key: 'start_date',
+    cell: ({ row }: any) => {
+      const { start_date } = row.original;
+      return <p className="">{start_date}</p>;
     },
   },
   // {
   //   accessorKey: 'action',
   //   header: '',
   //   key: 'action',
-  //   cell: ({ row }: any) => <ActionCell row={row} />,
+  //   cell: ({ row }: any) => <LoanActionCell row={row} />,
   // },
 ];
 
-export const ActionCell = ({ row }: any) => {
+export const LoanActionCell = ({ row }: any) => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const { orderID } = row.original;
   return (
     <div className="flex items-center">
       <div className="hover:bg-[#E8F9FF] p-2 rounded-full" role="button">
-        <Eye className="" size={18} />
+        <Eye className="" size={18} strokeWidth={1} />
       </div>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogTrigger asChild>
           <div className="hover:bg-[#E8F9FF] p-2 rounded-full" role="button">
-            <Trash2 size={18} role="button" />
+            <Trash2 size={18} role="button" strokeWidth={1} />
           </div>
         </DialogTrigger>
         <DialogContent>
@@ -172,9 +198,9 @@ export const StatusCell = ({ row }: any) => {
   const { status } = row.original as RowData;
 
   const eachStatus: EachStatus = {
-    Approved: (
+    Active: (
       <div className="text-[#25D366] bg-[#25D3661A] w-fit rounded-lg px-4 py-1">
-        Approved
+        Active
       </div>
     ),
     Declined: (

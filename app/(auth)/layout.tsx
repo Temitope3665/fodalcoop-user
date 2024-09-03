@@ -15,8 +15,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="bg-[#000]">
       <div className="lg:flex justify-between items-center lg:min-h-screen  lg:bg-none bg-[#2F4A89]">
-        <div className="lg:w-[40%] w-full lg:flex items-center h-screen lg:bg-white lg:py-6 overflow-y-auto px-8">
-          {isClient && <React.Fragment>{children}</React.Fragment>}
+        <div className="lg:w-[40%] w-full lg:flex items-center h-screen lg:bg-white lg:py-6 overflow-y-auto">
+          {isClient && <div className="px-6 w-full">{children}</div>}
         </div>
         <div
           className="hidden w-[60%] lg:flex items-center justify-center h-screen relative"

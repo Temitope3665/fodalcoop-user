@@ -7,15 +7,17 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { MessageIcon, UserProfileIcon } from '@/assets/svgs';
-import { Headset, Info, LogOut, Settings } from 'lucide-react';
-import { SETTINGS_URL, SUPPORT_URL } from '@/config/paths';
-import { ReactNode } from 'react';
+import { Headset, Info, Loader, LogOut, Settings } from 'lucide-react';
+import { LOGIN_URL, SETTINGS_URL, SUPPORT_URL } from '@/config/paths';
+import { ReactNode, useTransition } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import CompanyLogo from '@/assets/icons/fodal-icon.svg';
-import useStore from '@/lib/use-store';
+import useStore, { defaultUser } from '@/lib/use-store';
+import { userLogoutAction } from '@/lib/actions';
+import { toast } from 'sonner';
 
 interface IMainNav {
   isOpen?: boolean;
@@ -23,8 +25,24 @@ interface IMainNav {
 }
 
 export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
   const { user } = useStore();
   const pathname = usePathname();
+  const setUser = useStore((state) => state.setUser);
+
+  const handleLogout = () => {
+    startTransition(async () => {
+      const response: any = await userLogoutAction();
+      if (response.error) {
+        toast.error(response.error);
+      } else {
+        toast.success(response.message);
+        router.push(LOGIN_URL);
+        setUser(defaultUser);
+      }
+    });
+  };
 
   return (
     <header className="flex justify-between h-[8vh] border-b border-b-[#eeeded] bg-white fixed w-full z-10 top-0">
@@ -62,6 +80,11 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
                   </DropdownMenuItem>
                 </Link>
               ))}
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <p>Logout</p>
+                {pending && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -87,10 +110,5 @@ const navItems: { title: string; href: string; icon: ReactNode }[] = [
     title: 'Support',
     href: SUPPORT_URL,
     icon: <Headset className="mr-2 h-4 w-4" />,
-  },
-  {
-    title: 'Logout',
-    href: '#',
-    icon: <LogOut className="mr-2 h-4 w-4" />,
   },
 ];

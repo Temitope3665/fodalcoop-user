@@ -11,6 +11,7 @@ export const LOAN_GUARANTOR_EP: string = '/loan-guarantor';
 export const SAVINGS_EP: string = '/savings';
 export const TARGET_SAVINGS_EP: string = '/target-savings';
 export const BANK_EP: string = '/bank';
+export const LOAN_EP: string = '/loan';
 
 // Profile
 export const PROFILE_EP: string = '/member/profile';

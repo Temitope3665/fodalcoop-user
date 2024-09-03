@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 
 interface EachStatus {
   Active: ReactNode;
-  Canceled: ReactNode;
+  Declined: ReactNode;
   Pending: ReactNode;
 }
 
@@ -178,9 +178,9 @@ export const StatusCell = ({ row }: any) => {
         Active
       </div>
     ),
-    Canceled: (
+    Declined: (
       <div className="text-[#DE1D3E] bg-[#F8D2D81A] w-fit rounded-lg px-4 py-1">
-        Canceled
+        Declined
       </div>
     ),
     Pending: (

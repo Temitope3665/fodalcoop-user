@@ -193,7 +193,7 @@ export default function SupportForm() {
                       ) : (
                         <UploadFileIcon />
                       )}
-                      <p className="font-light">
+                      <p className="font-light text-xs">
                         Drag files here to upload or{' '}
                         <span className="text-primary font-semibold">
                           click to browse

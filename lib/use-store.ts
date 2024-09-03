@@ -1,7 +1,9 @@
-import { IUser } from '@/types';
+import { repaymentFormSchema } from '@/components/forms/loans/loan-repayment-form';
+import { IUser, extendedLoanFormSchema } from '@/types';
+import { z } from 'zod';
 import { create } from 'zustand';
 
-const defaultUser = {
+export const defaultUser = {
   email: '',
   id: '',
   member: {
@@ -12,6 +14,11 @@ const defaultUser = {
     phone: '',
     residentialAddress: '',
     agency_id: '',
+    member_account: {
+      liability: '',
+      savingBal: '',
+      loanBal: '',
+    },
   },
 };
 
@@ -21,6 +28,14 @@ interface StoreState {
   reset: () => void;
   user: IUser | null;
   setUser: (user: IUser | null) => void;
+  currentLoanCreation: z.infer<typeof extendedLoanFormSchema> | null;
+  currentLoanRepayment: z.infer<typeof repaymentFormSchema> | null;
+  setCurrentLoanCreation: (
+    loan: z.infer<typeof extendedLoanFormSchema> | null
+  ) => void;
+  setCurrentLoanRepayment: (
+    loan: z.infer<typeof repaymentFormSchema> | null
+  ) => void;
 }
 
 const useStore = create<StoreState>((set) => ({
@@ -29,6 +44,11 @@ const useStore = create<StoreState>((set) => ({
   reset: () => set({ count: 0 }),
   user: defaultUser,
   setUser: (user) => set({ user }),
+  currentLoanCreation: null,
+  currentLoanRepayment: null,
+  setCurrentLoanCreation: (currentLoanCreation) => set({ currentLoanCreation }),
+  setCurrentLoanRepayment: (currentLoanRepayment) =>
+    set({ currentLoanRepayment }),
 }));
 
 export default useStore;

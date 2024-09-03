@@ -1,5 +1,5 @@
 'use server';
-import { DashboardCard, cardData } from '@/components/dashboard-card';
+import { DashboardCard } from '@/components/dashboard-card';
 import AreaChartComponent from '@/components/ui/area-chart-component';
 import { dataA, dataB } from './data';
 import DashboardGuarantors from '@/components/dashboard/guarantors';
@@ -8,10 +8,8 @@ export default async function Dashboard() {
   return (
     <div className="space-y-8 pb-4">
       <h1 className="text-default font-semibold text-sm">Dashboard</h1>
-      <div className="grid lg:grid-cols-3 gap-4 overflow-y-auto">
-        {cardData.map((data) => (
-          <DashboardCard key={data.title} data={data} />
-        ))}
+      <div className="">
+        <DashboardCard />
       </div>
       <div className="grid lg:grid-cols-2 gap-4 h-[40vh]">
         <div className="bg-white p-4 rounded-lg">

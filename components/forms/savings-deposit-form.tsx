@@ -269,6 +269,7 @@ export default function SavingsDepositForm({
               </FormItem>
             )}
           />
+
           {form.getValues('paymentOption') === 'bank' && (
             <FormField
               control={form.control}
@@ -297,7 +298,7 @@ export default function SavingsDepositForm({
                               value={each.id.toString()}
                               key={each.accountNumber}
                             >
-                              {`${each.bank.name} - ${each.accountNumber}`}
+                              {`${each.bank_list.name} - ${each.accountNumber}`}
                             </SelectItem>
                           ))}
                         </React.Fragment>

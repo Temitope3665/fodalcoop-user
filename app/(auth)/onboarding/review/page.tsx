@@ -33,6 +33,7 @@ const ReviewOnboarding = () => {
   function handleComplete() {
     setIsPending(true);
     wait().then(() => {
+      localStorage.removeItem('fodal_user');
       router.push(LOGIN_URL);
       setIsPending(false);
     });
@@ -53,7 +54,6 @@ const ReviewOnboarding = () => {
     mutationFn: onboardNewUser,
     onSuccess: () => {
       setOpen(true);
-      localStorage.removeItem('fodal_user');
     },
     onError: (error: any) =>
       setError(
