@@ -140,54 +140,89 @@ export const columns: {
       return <p className="">{start_date}</p>;
     },
   },
-  // {
-  //   accessorKey: 'action',
-  //   header: '',
-  //   key: 'action',
-  //   cell: ({ row }: any) => <LoanActionCell row={row} />,
-  // },
+  {
+    accessorKey: 'action',
+    header: 'View more',
+    key: 'action',
+    cell: ({ row }: any) => <SavingsActionCell row={row} />,
+  },
 ];
 
-export const LoanActionCell = ({ row }: any) => {
+export const SavingsActionCell = ({ row }: any) => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const { orderID } = row.original;
+  const {
+    target_amount,
+    id,
+    target_reached,
+    total_payout,
+    interest,
+    no_of_withdrawal,
+    monthly_deduction,
+    savings_product,
+    other_saving_status,
+    start_date,
+    created_at,
+    end_date,
+  } = row.original;
   return (
     <div className="flex items-center">
-      <div className="hover:bg-[#E8F9FF] p-2 rounded-full" role="button">
-        <Eye className="" size={18} strokeWidth={1} />
-      </div>
-
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogTrigger asChild>
           <div className="hover:bg-[#E8F9FF] p-2 rounded-full" role="button">
-            <Trash2 size={18} role="button" strokeWidth={1} />
+            <Eye className="" size={18} strokeWidth={1} />
           </div>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="space-y-2">
           <DialogHeader>
-            <DialogTitle>Delete Product</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to continue with this action?
-            </DialogDescription>
+            <DialogTitle>Savings Details</DialogTitle>
           </DialogHeader>
-          <DialogFooter>
-            <div className="w-full flex gap-2">
-              <Button
-                onClick={() => setShowDialog(false)}
-                type="button"
-                variant="outline"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                // loadingText="Deleting..."
-              >
-                Continue
-              </Button>
+
+          <div className="space-y-4 text-xs">
+            <div className="grid grid-cols-2 gap-6">
+              <p>ID:</p>
+              <p>{id}</p>
             </div>
-          </DialogFooter>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Target Amount:</p>
+              <p>₦{formatCurrency(target_amount)}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Target Reached:</p>
+              <p>₦{formatCurrency(target_reached)}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Interest:</p>
+              <p>{interest}%</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Total Payout:</p>
+              <p>₦{formatCurrency(total_payout) || 'N/A'}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>No of withdrawal:</p>
+              <p>{no_of_withdrawal}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Monthly Deduction:</p>
+              <p>₦{formatCurrency(monthly_deduction)}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Savings Product:</p>
+              <p>{savings_product.name}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Savings Status:</p>
+              <p>{other_saving_status.name}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>Start date:</p>
+              <p>{start_date || formatDate2(created_at)}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <p>End date:</p>
+              <p>{end_date || 'N/A'}</p>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

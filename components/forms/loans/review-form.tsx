@@ -14,6 +14,8 @@ import {
 import { SuccessIcon } from '@/assets/svgs';
 import { LOAN_APPLICATIONS_KEY, RUNNING_LOAN_KEY } from '@/lib/query-keys';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { ExternalLink, Trash2 } from 'lucide-react';
 
 const ReviewForm = ({
   setCurrentFormView,
@@ -34,26 +36,24 @@ const ReviewForm = ({
   const { currentLoanCreation } = useStore();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  console.log(currentLoanCreation, '->currentLoanCreation');
-
   const guarantors = currentLoanCreation
     ? currentLoanCreation.guarantor.loan_guarantor
     : [];
 
-  console.log(guarantors, '-> guarantos');
+  const loanType = currentLoanCreation
+    ? JSON.parse(currentLoanCreation.loanType).name
+    : '';
 
   const { mutate, isPending } = useMutation({
     mutationFn: submitLoanRequest,
     onSuccess: () => {
+      setOpen(true);
       queryClient.invalidateQueries(LOAN_APPLICATIONS_KEY);
       queryClient.invalidateQueries(RUNNING_LOAN_KEY);
-      setOpen(true);
     },
     onError: (error: any) =>
       setCustomErrorField(error?.response?.data?.message || 'An error occured'),
   });
-
-  console.log(currentLoanCreation, '-> #D6D6D6');
 
   const handleSubmit = () => {
     const payload = {
@@ -66,7 +66,6 @@ const ReviewForm = ({
       monthlyRepayment: currentLoanCreation.repaymentModel,
       duration: JSON.parse(currentLoanCreation.loanProduct).duration,
     };
-    console.log(payload);
     mutate(payload);
   };
 
@@ -122,6 +121,71 @@ const ReviewForm = ({
           {formatCurrency(currentLoanCreation.interest)}%
         </p>
       </div>
+
+      {loanType === 'Mortgage Loan' && (
+        <div>
+          <p className="font-bold text-[10px] text-[#666666]">
+            MORTGAGE LOAN DOCUMENT
+          </p>
+          <React.Fragment>
+            <div className="grid grid-cols-2 gap-4 border px-4 py-2 bg-[#EDF0FF] border-[#EDF0FF] text-xs">
+              <p>Title</p>
+              <p>Document</p>
+            </div>
+            {currentLoanCreation.documents?.map((field: any, index: number) => (
+              <div key={field.id + index} className="space-y-2">
+                <div className="grid py-2 px-4 grid-cols-2 gap-4 border text-xs">
+                  <div className="flex space-x-2 items-center">
+                    <p className="col-span-0.5">{index + 1}.</p>
+                    <p>{field.title}</p>
+                  </div>
+                  <div className="flex justify-between w-full">
+                    <Link href={field.file_path} target="_blank">
+                      <div className="flex space-x-2 items-center text-sm">
+                        <p className="text-xs">Link</p>
+                        <ExternalLink size={16} strokeWidth={1} />
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </React.Fragment>
+        </div>
+      )}
+
+      {loanType === 'Capital Loan' && (
+        <div>
+          <p className="font-bold text-[10px] text-[#666666]">
+            CAPITAL PRODUCT LOAN
+          </p>
+          <React.Fragment>
+            <div className="grid grid-cols-5 border p-2 gap-2 text-xs bg-[#EDF0FF] border-[#EDF0FF]">
+              <p>Name</p>
+              <p>Qty</p>
+              <p>Rate</p>
+              <p>Amount</p>
+              <p>Inv. No.</p>
+            </div>
+            {currentLoanCreation.capital_loan_product?.map(
+              (field: any, index: number) => (
+                <div key={field.id + index} className="space-y-2">
+                  <div className="grid py-2 px-2 grid-cols-5 gap-2 border text-xs">
+                    <p>{field.title}</p>
+                    <p>{field.qty}</p>
+                    <p>{formatCurrency(field.rate)}</p>
+                    <p>{formatCurrency(field.amount)}</p>
+                    <div className="flex justify-between w-full">
+                      <p>{field.invoice_number}</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </React.Fragment>
+        </div>
+      )}
+
       <div className="">
         <p className="font-bold text-[10px] text-[#666666]">GUARANTOR</p>
 

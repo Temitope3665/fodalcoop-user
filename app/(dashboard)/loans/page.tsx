@@ -11,7 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import LoanRequestForm from '@/components/forms/loans/loan-request-form';
+import LoanRequestForm from '@/components/forms/loans/request-form/loan-request-form';
 import GuarantorForm from '@/components/forms/loans/guarantor-form';
 import ReviewForm from '@/components/forms/loans/review-form';
 

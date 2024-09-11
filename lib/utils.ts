@@ -1,6 +1,7 @@
-import { IDefaultUser } from '@/types';
+import { IDefaultUser, ILoanRequestAction, ILoanRoute } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
 import { format, parseISO } from 'date-fns';
+import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -90,3 +91,57 @@ export const roundNumber = (num: number) => {
   const rounded = Number(num.toFixed(1));
   return rounded % 1 === 0 ? Math.round(rounded) : rounded;
 };
+
+export function loanRoute({
+  setIsRouting,
+  setCurrentLoanCreation,
+  setCurrentFormView,
+  data,
+}: ILoanRoute) {
+  setIsRouting(true);
+  setCurrentLoanCreation(data);
+  wait().then(() => {
+    setCurrentFormView(2);
+    setIsRouting(false);
+  });
+}
+
+export function loanRequestAction({
+  data,
+  totalLoan,
+  customPayment,
+  setIsRouting,
+  setCurrentLoanCreation,
+  setCurrentFormView,
+  watchDocuments,
+  watchCapitalLoanProduct,
+}: ILoanRequestAction) {
+  const loanType = data.loanType && JSON.parse(data.loanType).name;
+  console.log(loanType);
+
+  const routeLoan = () =>
+    loanRoute({
+      setIsRouting,
+      setCurrentLoanCreation,
+      setCurrentFormView,
+      data,
+    });
+
+  if (loanType === 'Mortgage Loan' && watchDocuments.length === 0) {
+    toast.error('Kindly upload at least one document');
+    return;
+  }
+  if (loanType === 'Capital Loan' && watchCapitalLoanProduct.length === 0) {
+    toast.error('Kindly enter at least one product');
+    return;
+  }
+
+  if (data.repaymentModel === 'Self-determined') {
+    if (Number(customPayment?.total) !== Number(totalLoan)) {
+      toast.error('Kindly complete your loan repayment');
+      return;
+    }
+  }
+
+  routeLoan();
+}

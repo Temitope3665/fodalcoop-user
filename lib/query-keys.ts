@@ -19,5 +19,7 @@ export const LOAN_PROFILE_KEY: string = 'loan_profile_key';
 export const CUSTOM_PAYMENT_KEY: string = 'custom_payment_key';
 export const LOAN_PRODUCT_KEY: string = 'loan_product_key';
 export const LOAN_GUARANTOR_KEY: string = 'loan_guarantor_key';
+export const LOAN_MORTGAGE_KEY: string = 'loan_mortgage_key';
+export const LOAN_CAPITAL_PRODUCTS_KEY: string = 'loan_capital_products_key';
 
 export const SAVINGS_PROFILE_KEY: string = 'savings_profile_key';

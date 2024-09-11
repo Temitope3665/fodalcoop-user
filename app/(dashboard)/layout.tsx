@@ -23,6 +23,7 @@ export default function DashboardLayout({
 
     fetchUser();
   }, [setUser]);
+
   return (
     <div className="min-h-screen w-full bg-[#FAFAFA]">
       <MainNav isOpen={isOpen} setIsOpen={setIsOpen} />

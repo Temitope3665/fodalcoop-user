@@ -73,7 +73,7 @@ export const incomingColumns: {
     key: 'loan',
     cell: ({ row }: any) => {
       const { loan } = row.original;
-      return <p>{loan?.member?.email || '-'}</p>;
+      return <p className="lowercase">{loan?.member?.email || '-'}</p>;
     },
   },
   {
@@ -177,7 +177,7 @@ export const ActionCell = ({ row }: any) => {
       >
         <Eye className="" size={18} strokeWidth={1} />
       </div>
-      {status === '3' ? (
+      {status === '2' || status === '3' ? (
         ''
       ) : (
         <React.Fragment>
@@ -185,7 +185,7 @@ export const ActionCell = ({ row }: any) => {
             className="hover:bg-[#E8F9FF] p-2 rounded-full"
             role="button"
             onClick={() => {
-              setType('approve-request');
+              setType('accept-request');
               setOpen(true);
             }}
           >
@@ -217,8 +217,8 @@ export const ActionCell = ({ row }: any) => {
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will{' '}
-              {type === 'approve-request' ? 'accept' : 'decline'} the
-              guarantor's request sent to you.
+              {type === 'accept-request' ? 'accept' : 'decline'} the guarantor's
+              request sent to you.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -319,7 +319,7 @@ export const ActionCell = ({ row }: any) => {
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Member Email:</p>
-              <p>{loan?.member?.email}</p>
+              <p className="lowercase">{loan?.member?.email}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Total Loan:</p>
@@ -339,7 +339,7 @@ export const ActionCell = ({ row }: any) => {
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Principal:</p>
-              <p>{formatCurrency(loan?.principal)}</p>
+              <p>₦{formatCurrency(loan?.principal)}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Principal Balance:</p>

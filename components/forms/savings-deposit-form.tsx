@@ -34,22 +34,15 @@ import {
 } from '@/components/ui/select';
 
 import { cn } from '@/lib/utils';
-import { loanType } from '@/config/loan-config';
 import { Textarea } from '../ui/textarea';
-import {
-  CashDepositIcon,
-  SuccessIcon,
-  TransferDepositIcon,
-} from '@/assets/svgs';
+import { CashDepositIcon, SuccessIcon } from '@/assets/svgs';
 import { Label } from '../ui/label';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getBanks } from '@/config/apis/dashboard';
 import {
   BANKS_KEY,
   DEPOSIT_LOG_KEY,
-  NEW_SAVINGS_REQUESTS_KEY,
   SAVINGS_PROFILE_KEY,
-  STANDARD_SAVINGS_KEY,
   TARGETED_SAVINGS_KEY,
 } from '@/lib/query-keys';
 import {
@@ -59,14 +52,31 @@ import {
 } from '@/config/apis/savings';
 import { ErrorMessages } from '../showError';
 import { Landmark } from 'lucide-react';
+import { TARGET_SAVINGS_EP } from '@/config/endpoints';
 
-export const savingsDepositSchema = z.object({
-  savingsType: z.string().min(1, { message: 'Savings type is required' }),
-  selectAccount: z.string().min(1, { message: 'Bank is required' }),
-  amount: z.string().min(1, { message: 'Amount is required' }),
-  narration: z.string().min(1, { message: 'Narration is required' }),
-  paymentOption: z.string().min(1, { message: 'Payment method is required' }),
-});
+export const savingsDepositSchema = z
+  .object({
+    savingsType: z.string().min(1, { message: 'Savings type is required' }),
+    targetSavingsProfile: z
+      .string()
+      .min(1, { message: 'Savings product is required' }),
+    selectAccount: z.string().min(1, { message: 'Bank is required' }),
+    amount: z.string().min(1, { message: 'Amount is required' }),
+    narration: z.string().min(1, { message: 'Narration is required' }),
+    paymentOption: z.string().min(1, { message: 'Payment method is required' }),
+  })
+  .refine(
+    (data) => {
+      return (
+        data.targetSavingsProfile !== '2' ||
+        data.targetSavingsProfile.length > 0
+      );
+    },
+    {
+      message: 'Savings product is required when savings type is 2',
+      path: ['targetSavingsProfile'],
+    }
+  );
 
 export default function SavingsDepositForm({
   setOpen,
@@ -81,6 +91,7 @@ export default function SavingsDepositForm({
     resolver: zodResolver(savingsDepositSchema),
     defaultValues: {
       savingsType: '',
+      targetSavingsProfile: '',
       narration: '',
       paymentOption: 'bank',
       selectAccount: '',
@@ -88,9 +99,22 @@ export default function SavingsDepositForm({
     },
   });
 
+  const watchSavingsType = form.watch('savingsType');
+
   const { data, isLoading, isError } = useQuery({
     queryFn: getBanks,
     queryKey: [BANKS_KEY],
+  });
+
+  const {
+    data: data2,
+    isLoading: isLoading2,
+    isError: isError2,
+    error: error2,
+  }: any = useQuery({
+    queryFn: () => getStandardSavings(TARGET_SAVINGS_EP),
+    queryKey: [TARGETED_SAVINGS_KEY],
+    enabled: watchSavingsType === '2',
   });
 
   const {
@@ -101,8 +125,6 @@ export default function SavingsDepositForm({
     queryFn: getSavingsProfile,
     queryKey: [SAVINGS_PROFILE_KEY],
   });
-
-  console.log(data1, '-> ');
 
   const paymentMethods: {
     name: string;
@@ -139,7 +161,6 @@ export default function SavingsDepositForm({
   }, [form.watch]);
 
   function onSubmit(data: z.infer<typeof savingsDepositSchema>) {
-    console.log(data);
     setErrorField('');
     mutate(data);
   }
@@ -189,6 +210,64 @@ export default function SavingsDepositForm({
               </FormItem>
             )}
           />
+
+          {watchSavingsType === '2' && (
+            <FormField
+              control={form.control}
+              name="targetSavingsProfile"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Select loan product</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select loan product" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {isLoading2 ? (
+                        <p className="px-4 py-2 text-xs font-light text-primary">
+                          Loading savings product...
+                        </p>
+                      ) : (
+                        <React.Fragment>
+                          {data2?.length === 0 ? (
+                            <p className="px-4 py-2 text-sm font-light">
+                              No savings product
+                            </p>
+                          ) : (
+                            <React.Fragment>
+                              {data2?.map(
+                                (each: {
+                                  savings_product: { name: string; id: string };
+                                }) => (
+                                  <SelectItem
+                                    value={each.savings_product.id.toString()}
+                                    key={each.savings_product.name}
+                                  >
+                                    {each.savings_product.name}
+                                  </SelectItem>
+                                )
+                              )}
+                            </React.Fragment>
+                          )}
+                        </React.Fragment>
+                      )}
+                      {isError2 && (
+                        <p className="px-4 py-2 text-sm font-light text-destructive">
+                          An error occured while fetching loan product...
+                        </p>
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           <FormField
             control={form.control}

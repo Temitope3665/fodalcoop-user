@@ -101,3 +101,54 @@ export const submitLoanRepaymentDeposit = (payload: {
       },
     })
     .then((response) => response.data);
+
+export const getMortgageDocument = (): Promise<
+  { id: string; title: string; file_path: string }[]
+> => client.get(`${LOAN_EP}/fetch-document`).then((response) => response.data);
+
+export const addMortgageDocument = (payload: {
+  title: string;
+  image: File | undefined;
+}): Promise<any> =>
+  client
+    .post(`${LOAN_EP}/add-new-document`, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => response.data);
+
+export const deleteMortgageDocument = (id: string): Promise<any> =>
+  client
+    .delete(`${LOAN_EP}/remove-document/${id}`)
+    .then((response) => response.data);
+
+export const getCapitalProducts = (): Promise<{
+  data: {
+    cart: {
+      title: string;
+      rate: string;
+      qty: string;
+      order_id: number;
+      invoice_number: string;
+      amount: string;
+      id: number;
+    }[];
+  };
+  totalAmount: string;
+}> => client.get(`${LOAN_EP}/fetch-cartItem`).then((response) => response.data);
+
+export const addCapitalProducts = (payload: {
+  itemName: string;
+  qty: string;
+  price: string;
+  invoiceNumber: string;
+}): Promise<any> =>
+  client
+    .post(`${LOAN_EP}/add-new-cartItem`, payload)
+    .then((response) => response.data);
+
+export const deleteCapitalProducts = (id: string): Promise<any> =>
+  client
+    .delete(`${LOAN_EP}/remove-cartItem/${id}`)
+    .then((response) => response.data);

@@ -13,16 +13,22 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { MoveLeft } from 'lucide-react';
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const { push } = useRouter();
 
   return (
-    <div className="lg:p-10 flex items-center w-full bg-[#FAFAFA] h-screen">
+    <div className="lg:p-10 flex items-center w-full bg-[#FAFAFA] min-h-screen">
       <div className="space-y-4 w-full px-4 lg:py-0">
         <Dialog>
           <DialogTrigger asChild>
-            <h1 className="cursor-pointer w-fit">FODAL COOP</h1>
+            <div
+              className="flex items-center space-x-2 border rounded-full px-2 py-1 w-fit"
+              role="button"
+            >
+              <MoveLeft size={18} /> <p className="text-sm">Go home</p>
+            </div>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -38,7 +44,13 @@ const Layout = ({ children }: { children: ReactNode }) => {
                 </Button>
               </DialogClose>
 
-              <Button type="button" onClick={() => push(LOGIN_URL)}>
+              <Button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem('new_user');
+                  push(LOGIN_URL);
+                }}
+              >
                 Continue
               </Button>
             </DialogFooter>

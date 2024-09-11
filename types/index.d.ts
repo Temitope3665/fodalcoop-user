@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import type { Icon } from 'lucide-react';
 
 import { Icons } from '@/components/icons';
-import { loanFormSchema } from '@/components/forms/loans/loan-request-form';
+import { loanFormSchema } from '@/components/forms/loans/request-form/loan-request-form';
 
 export type NavItem = {
   title: string;
@@ -18,6 +18,7 @@ export type SidebarNavItem = {
   submenu?: boolean;
   icon: React.ReactNode;
   subMenuItems?: SidebarNavItem[];
+  disabled: boolean;
 };
 
 export type DashboardConfig = {
@@ -193,3 +194,21 @@ export const additionalSchema = z.object({
 });
 
 export const extendedLoanFormSchema = loanFormSchema.merge(additionalSchema);
+
+export interface ILoanRoute {
+  setIsRouting: (arg: boolean) => void;
+  setCurrentLoanCreation: any;
+  setCurrentFormView: (arg: number) => void;
+  data: any;
+}
+
+export interface ILoanRequestAction {
+  setIsRouting: (arg: boolean) => void;
+  setCurrentLoanCreation: any;
+  setCurrentFormView: (arg: number) => void;
+  data: any;
+  totalLoan: number | null;
+  customPayment: any;
+  watchDocuments: any[];
+  watchCapitalLoanProduct: any[];
+}

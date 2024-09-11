@@ -49,15 +49,16 @@ export default function SidebarNav({ setOpen, open }: ISidebarNav) {
 
 const MenuItem = ({ item }: { item: SidebarNavItem }) => {
   const pathname = usePathname();
-  const { href, icon, title } = item;
+  const { href, icon, title, disabled } = item;
   const isActive = href && pathname.startsWith(href);
   return (
     <Link
       className={cn(
         'py-4 font-light trans text-sm px-4 rounded-lg  w-[80%] ml-4 lg:ml-0 text-default bg-white flex items-center space-x-2',
-        isActive && 'bg-primary text-white'
+        isActive && 'bg-primary text-white',
+        disabled && 'opacity-55 cursor-not-allowed'
       )}
-      href={href}
+      href={disabled ? '#' : href}
     >
       <div>{icon}</div>
       <p>{title}</p>

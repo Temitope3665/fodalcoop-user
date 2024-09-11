@@ -24,6 +24,6 @@ export const negotiateRequest = async (payload: {
 }): Promise<{ data: any[] }> => {
   const { guarantorId, amount } = payload;
   return client
-    .post(`${LOAN_GUARANTOR_EP}/update/${guarantorId}`, { amount })
+    .post(`${LOAN_GUARANTOR_EP}/update-request/${guarantorId}`, { amount })
     .then((response) => response.data);
 };

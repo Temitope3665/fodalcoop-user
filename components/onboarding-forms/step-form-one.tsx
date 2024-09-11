@@ -20,9 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 import { ONBOARDING_STEP_TWO_URL } from '@/config/paths';
-import { wait } from '@/lib/utils';
-import { isValidPhoneNumber } from 'react-phone-number-input';
-import { PhoneInput } from '../ui/phone-input';
+import { phoneNumberPattern, wait } from '@/lib/utils';
 
 export const formSchema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
@@ -30,9 +28,9 @@ export const formSchema = z.object({
   email: z.string().min(1, { message: 'Email is required' }).email({
     message: 'Invalid email format',
   }),
-  phone: z
-    .any()
-    .refine(isValidPhoneNumber, { message: 'Invalid phone number' }),
+  phone: z.string().regex(phoneNumberPattern, {
+    message: 'Invalid phone number',
+  }),
 });
 
 interface IDefaultUser {
@@ -45,8 +43,7 @@ interface IDefaultUser {
 export default function StepOneForm() {
   const [isPending, setIsPending] = React.useState(false);
   const getCurrentUser =
-    (typeof window !== 'undefined' && localStorage.getItem('fodal_user')) ||
-    '{}';
+    (typeof window !== 'undefined' && localStorage.getItem('new_user')) || '{}';
   const defaultUser: IDefaultUser = JSON.parse(getCurrentUser);
 
   const router = useRouter();
@@ -64,7 +61,7 @@ export default function StepOneForm() {
     setIsPending(true);
     wait().then(() => {
       localStorage.setItem(
-        'fodal_user',
+        'new_user',
         JSON.stringify({ ...defaultUser, ...data })
       );
       router.push(ONBOARDING_STEP_TWO_URL);
@@ -132,44 +129,21 @@ export default function StepOneForm() {
         <FormField
           control={form.control}
           name="phone"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormItem className="flex flex-col items-start">
               <FormLabel>Phone Number</FormLabel>
               <FormControl className="w-full">
-                <PhoneInput placeholder="+234 800 000 0000" {...field} />
+                <Input
+                  placeholder="Enter phone number"
+                  invalid={fieldState.invalid}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="password"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <FormGroup>
-                  <Input
-                    type={showPassword ? 'text' : 'password'}
-                    autoCapitalize="none"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    placeholder="******"
-                    invalid={fieldState.invalid}
-                    {...field}
-                  />
-                  <InputAdornment
-                    adornment={showPassword ? <EyeOff /> : <Eye />}
-                    onClick={togglePasswordVisibility}
-                    position="end"
-                  />
-                </FormGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+
         <Button
           type="submit"
           size="lg"

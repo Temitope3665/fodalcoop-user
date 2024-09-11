@@ -95,8 +95,6 @@ export default function GuarantorForm({
     queryKey: [LOAN_GUARANTOR_KEY],
   });
 
-  console.log(data, '-> data');
-
   const { mutate, isPending } = useMutation({
     mutationFn: addGuarantor,
     onSuccess: async () => {
@@ -126,12 +124,10 @@ export default function GuarantorForm({
       total_loan: currentLoanCreation?.total || '',
     };
     mutate(payload);
-    console.log(payload);
   };
 
   function handleNext() {
     const payload = { ...currentLoanCreation, guarantor: data };
-    console.log(payload);
 
     setIsRouting(true);
     wait().then(() => {
@@ -153,11 +149,11 @@ export default function GuarantorForm({
     return sum + parseFloat(item?.liability);
   }, 0);
 
-  console.log(formatCurrency(totalLiability || 0));
-
-  if (isError) {
-    setCustomErrorField('An error occured while accessing the server');
-  }
+  React.useEffect(() => {
+    if (isError) {
+      setCustomErrorField('An error occured while accessing the server');
+    }
+  }, [isError]);
 
   return (
     <Form {...form}>

@@ -26,14 +26,13 @@ const ReviewOnboarding = () => {
   const [isBack, setIsBack] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const getCurrentUser =
-    (typeof window !== 'undefined' && localStorage.getItem('fodal_user')) ||
-    '{}';
+    (typeof window !== 'undefined' && localStorage.getItem('new_user')) || '{}';
   const defaultUser: IDefaultUser = JSON.parse(getCurrentUser);
 
   function handleComplete() {
     setIsPending(true);
     wait().then(() => {
-      localStorage.removeItem('fodal_user');
+      localStorage.removeItem('new_user');
       router.push(LOGIN_URL);
       setIsPending(false);
     });
@@ -72,7 +71,6 @@ const ReviewOnboarding = () => {
         dob: format(defaultUser.dob, 'yyyy-MM-dd'),
         doe: format(defaultUser.doe, 'yyyy-MM-dd'),
       };
-      console.log(payload);
       mutate(payload);
     }
   };

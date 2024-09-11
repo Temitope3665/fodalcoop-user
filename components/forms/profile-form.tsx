@@ -75,8 +75,6 @@ const ProfileForm = ({ user }: { user: IUser | null }) => {
     form.setValue('agency', user?.member.agency_id.toString() || '');
   }, [user, data]);
 
-  console.log(user);
-
   const { mutate, isPending } = useMutation({
     mutationFn: updateProfile,
     onSuccess: async (response, variables: any) => {

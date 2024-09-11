@@ -165,8 +165,16 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = 'FormMessage';
 
-const FormGroup = ({ children }: { children: React.ReactNode }) => (
-  <div className="relative flex items-center w-full">{children}</div>
+const FormGroup = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <div className={cn('relative flex items-center w-full', className)}>
+    {children}
+  </div>
 );
 
 FormGroup.displayName = 'FormGroup';

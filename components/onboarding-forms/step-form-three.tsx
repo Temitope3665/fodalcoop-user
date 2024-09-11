@@ -54,8 +54,7 @@ export const formSchema = z.object({
 export default function StepThreeForm() {
   const router = useRouter();
   const getCurrentUser =
-    (typeof window !== 'undefined' && localStorage.getItem('fodal_user')) ||
-    '{}';
+    (typeof window !== 'undefined' && localStorage.getItem('new_user')) || '{}';
   const defaultUser: IDefaultUser = JSON.parse(getCurrentUser);
   const [isBack, setIsBack] = React.useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -73,7 +72,7 @@ export default function StepThreeForm() {
     setIsPending(true);
     wait().then(() => {
       localStorage.setItem(
-        'fodal_user',
+        'new_user',
         JSON.stringify({ ...defaultUser, ...data })
       );
       router.push(ONBOARDING_STEP_FOUR_URL);
@@ -85,7 +84,7 @@ export default function StepThreeForm() {
     setIsBack(true);
     wait().then(() => {
       localStorage.setItem(
-        'fodal_user',
+        'new_user',
         JSON.stringify({ ...defaultUser, ...form.getValues() })
       );
       router.push(ONBOARDING_STEP_TWO_URL);

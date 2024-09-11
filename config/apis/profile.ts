@@ -1,5 +1,5 @@
 import client from '@/lib/axios-instance';
-import { MESSAGE_EP, PROFILE_EP } from '../endpoints';
+import { COMPANY_PROFILE_EP, MESSAGE_EP, PROFILE_EP } from '../endpoints';
 import { ApiResponse, IMessageResponse } from '@/types';
 import { z } from 'zod';
 import { formSchema } from '@/components/forms/profile-form';
@@ -21,3 +21,8 @@ export const updatePassword = (
   client
     .post(`${PROFILE_EP}/change-password`, payload)
     .then((response) => response.data);
+
+export const getCompanyProfile = (): Promise<{
+  image_path: string;
+  name: string;
+}> => client.get(COMPANY_PROFILE_EP).then((response) => response.data);

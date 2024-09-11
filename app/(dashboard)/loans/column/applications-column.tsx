@@ -105,6 +105,7 @@ export const LoanActionCell = ({ row }: any) => {
     interest_paid,
     created_at,
   } = row.original;
+
   const eachStatus: Record<typeof status, JSX.Element> = {
     Approved: (
       <div className="text-[#25D366] bg-[#25D3661A] w-fit rounded-lg px-4 py-1">
@@ -147,7 +148,7 @@ export const LoanActionCell = ({ row }: any) => {
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Total Loan:</p>
-              <p>{formatCurrency(totalLoan)}</p>
+              <p>₦{formatCurrency(totalLoan)}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Total Balance:</p>
@@ -163,15 +164,15 @@ export const LoanActionCell = ({ row }: any) => {
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Principal:</p>
-              <p>{formatCurrency(principal)}</p>
+              <p>₦{formatCurrency(principal)}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Principal Balance:</p>
-              <p>{formatCurrency(principal_bal)}</p>
+              <p>₦{formatCurrency(principal_bal)}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Principal Paid:</p>
-              <p>{formatCurrency(principal_paid)}</p>
+              <p>₦{formatCurrency(principal_paid)}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Interest:</p>
@@ -179,11 +180,11 @@ export const LoanActionCell = ({ row }: any) => {
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Interest Balance:</p>
-              <p>{formatCurrency(interest_bal)}</p>
+              <p>₦{formatCurrency(interest_bal)}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Interest Paid:</p>
-              <p>{formatCurrency(interest_paid)}</p>
+              <p>₦{formatCurrency(interest_paid)}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <p>Name:</p>

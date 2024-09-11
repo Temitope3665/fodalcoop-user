@@ -72,8 +72,7 @@ export default function StepTwoForm() {
   const router = useRouter();
   const [isBack, setIsBack] = React.useState(false);
   const getCurrentUser =
-    (typeof window !== 'undefined' && localStorage.getItem('fodal_user')) ||
-    '{}';
+    (typeof window !== 'undefined' && localStorage.getItem('new_user')) || '{}';
   const defaultUser: IDefaultUser = JSON.parse(getCurrentUser);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,13 +91,11 @@ export default function StepTwoForm() {
     queryKey: [AGENCY_KEY],
   });
 
-  console.log(data);
-
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsPending(true);
     wait().then(() => {
       localStorage.setItem(
-        'fodal_user',
+        'new_user',
         JSON.stringify({ ...defaultUser, ...data })
       );
       router.push(ONBOARDING_STEP_THREE_URL);
@@ -110,7 +107,7 @@ export default function StepTwoForm() {
     setIsBack(true);
     wait().then(() => {
       localStorage.setItem(
-        'fodal_user',
+        'new_user',
         JSON.stringify({ ...defaultUser, ...form.getValues() })
       );
       router.push(ONBOARDING_STEP_ONE_URL);

@@ -63,8 +63,6 @@ export default function LoanRepaymentForm({
     (state) => state.setCurrentLoanRepayment
   );
 
-  console.log(currentLoanRepayment, 'currentLoanRepayment');
-
   const form = useForm<z.infer<typeof repaymentFormSchema>>({
     resolver: zodResolver(repaymentFormSchema),
     defaultValues: {
@@ -93,8 +91,6 @@ export default function LoanRepaymentForm({
   });
 
   const [isRouting, setIsRouting] = React.useState(false);
-
-  console.log(currentLoanRepayment);
 
   const paymentMethods: {
     name: string;
@@ -138,8 +134,6 @@ export default function LoanRepaymentForm({
     queryKey: ['payment_schedule'],
   });
 
-  console.log(schedules);
-
   function onSubmit(data: z.infer<typeof repaymentFormSchema>) {
     setIsRouting(true);
     setCurrentLoanRepayment(data);
@@ -148,8 +142,6 @@ export default function LoanRepaymentForm({
       setIsRouting(false);
     });
   }
-
-  console.log(form.formState.errors, '->fields');
 
   return (
     <Form {...form}>

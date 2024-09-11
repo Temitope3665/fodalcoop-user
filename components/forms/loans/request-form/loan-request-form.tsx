@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { formatCurrency, wait } from '@/lib/utils';
+import { formatCurrency, loanRequestAction, wait } from '@/lib/utils';
 import { loanType } from '@/config/loan-config';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -41,28 +41,15 @@ import {
   LOAN_PRODUCT_KEY,
   LOAN_PROFILE_KEY,
 } from '@/lib/query-keys';
-import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import useStore from '@/lib/use-store';
-import ShowError, { ErrorMessages } from '@/components/showError';
-
-const repaymentSchema = z.object({
-  month: z.string().min(1, { message: 'Month is required' }),
-  amount: z.string().min(1, { message: 'Amount is required' }),
-  monthId: z.string().optional(),
-});
-
-export const loanFormSchema = z.object({
-  loanType: z.string().min(1, { message: 'Loan type is required' }),
-  loanProduct: z.string({ message: 'Loan product is required' }),
-  noOfMonth: z.string().optional(),
-  repaymentModel: z.string().min(1, { message: 'Repayment model is required' }),
-  amount: z.string().min(1, { message: 'Amount is required' }),
-  interest: z.string().min(1, { message: 'Loan interest is required' }),
-  totalLoan: z.string({ message: 'Total loan is required' }),
-  total: z.string().optional(),
-  repayment_plan: z.array(repaymentSchema).optional(),
-});
+import ShowError from '@/components/showError';
+import SelfDeterminedForm from './self-determined-form';
+import SelectLoanType from './select-loan-product';
+import SelectLoanProduct from './select-loan-type';
+import AddDocument from './add-document';
+import { loanFormSchema } from './loan-form-schema';
+import AddCapitalLoanFields from './add-capital-loan-product';
 
 export default function LoanRequestForm({
   setOpen,
@@ -91,15 +78,19 @@ export default function LoanRequestForm({
       interest: currentLoanCreation?.interest || '',
       totalLoan: currentLoanCreation?.totalLoan || '',
       total: currentLoanCreation?.total || '',
+      capital_loan_product: currentLoanCreation?.capital_loan_product || [
+        { title: '', qty: '', rate: '', invoice_number: '', amount: '' },
+      ],
       repayment_plan: currentLoanCreation?.repayment_plan || [
         { month: '', amount: '', monthId: '' },
+      ],
+      documents: currentLoanCreation?.documents || [
+        { file_path: '', title: '' },
       ],
     },
   });
   const [selectedItem, setSelectedItem] = React.useState(loanType[0]);
   const [isRouting, setIsRouting] = React.useState(false);
-
-  console.log(currentLoanCreation, '-currentLoanCreation');
 
   const { fields, append, prepend, remove } = useFieldArray({
     control: form.control,
@@ -142,14 +133,13 @@ export default function LoanRequestForm({
       setCustomErrorField(error?.response?.data?.message || 'An error occured'),
   });
 
-  console.log(customPayment);
-
   const watchLoanType = form.watch('loanType');
   const watchLoanProduct = form.watch('loanProduct');
   const watchLoanAmount = form.watch('amount');
   const watchRepayment = form.watch('repaymentModel');
   const watchRePaymentPlan = form.watch('repayment_plan');
-  const watchTotal = form.watch('total');
+  const watchDocuments = form.watch('documents');
+  const watchCapitalLoanProduct = form.watch('capital_loan_product');
 
   const loanPeriod = selectedLoanProduct
     ? Math.round(Number(selectedLoanProduct.duration) / 30)
@@ -179,7 +169,6 @@ export default function LoanRequestForm({
 
   React.useEffect(() => {
     if (watchLoanProduct) {
-      console.log(watchLoanProduct, '-> watchLoanProduct');
       const selectedLoanProduct = watchLoanProduct
         ? JSON.parse(watchLoanProduct)
         : null;
@@ -256,10 +245,6 @@ export default function LoanRequestForm({
     }
   };
 
-  const totalLoanAmountLeft = watchRePaymentPlan
-    ? watchRePaymentPlan.reduce((sum, item) => sum + Number(item.amount), 0)
-    : null;
-
   const periodLength = Array.from({ length: loanPeriod || 1 }, (_, i) => ({
     month: (i + 1).toString(),
   }));
@@ -268,10 +253,6 @@ export default function LoanRequestForm({
     ? customPayment.data.reduce((sum, item) => {
         return sum + parseFloat(item.amount);
       }, 0)
-    : null;
-
-  const totalAmountLeft = customPayment
-    ? Number(totalAmount) - Number(customPayment?.total)
     : null;
 
   React.useEffect(() => {
@@ -286,132 +267,35 @@ export default function LoanRequestForm({
   }, [customPayment, fetchingCustomPayment]);
 
   function onSubmit(data: z.infer<typeof loanFormSchema>) {
-    if (data.repaymentModel === 'Self-determined') {
-      if (Number(customPayment?.total) !== Number(totalLoan)) {
-        toast.error('Kindly complete your loan repayment');
-      } else {
-        setIsRouting(true);
-        setCurrentLoanCreation(data);
-        wait().then(() => {
-          setCurrentFormView(2);
-          setIsRouting(false);
-        });
-      }
-    } else {
-      setIsRouting(true);
-      setCurrentLoanCreation(data);
-      wait().then(() => {
-        setCurrentFormView(2);
-        setIsRouting(false);
-      });
-    }
+    loanRequestAction({
+      data,
+      totalLoan,
+      customPayment,
+      setIsRouting,
+      setCurrentLoanCreation,
+      setCurrentFormView,
+      watchDocuments,
+      watchCapitalLoanProduct,
+    });
+    console.log(data);
   }
-
-  console.log(form.formState.errors, '->fields');
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-        <FormField
-          control={form.control}
-          name="loanType"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Select loan type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select loan type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {isLoading ? (
-                    <p className="px-4 py-2 text-xs font-light text-primary">
-                      Loading loan type...
-                    </p>
-                  ) : (
-                    <React.Fragment>
-                      {data?.length === 0 ? (
-                        <p className="px-4 py-2 text-xs font-light text-primary">
-                          No loan type
-                        </p>
-                      ) : (
-                        <React.Fragment>
-                          {data?.map((each) => (
-                            <SelectItem
-                              value={JSON.stringify(each)}
-                              key={each.name}
-                            >
-                              {each.name}
-                            </SelectItem>
-                          ))}
-                        </React.Fragment>
-                      )}
-                    </React.Fragment>
-                  )}
-                  {isError && (
-                    <p className="px-4 py-2 text-sm font-light text-destructive">
-                      An error occured while fetching loan type...
-                    </p>
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+        <SelectLoanProduct
+          isLoading={isLoading}
+          form={form}
+          data={data}
+          isError={isError}
         />
 
         {form.getValues('loanType') && (
-          <FormField
-            control={form.control}
-            name="loanProduct"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>Select loan product</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select loan product" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {loadingLoanProduct ? (
-                      <p className="px-4 py-2 text-xs font-light text-primary">
-                        Loading loan product...
-                      </p>
-                    ) : (
-                      <React.Fragment>
-                        {loanProduct?.length === 0 ? (
-                          <p className="px-4 py-2 text-sm font-light">
-                            No loan product
-                          </p>
-                        ) : (
-                          <React.Fragment>
-                            {loanProduct?.map((each) => (
-                              <SelectItem
-                                value={JSON.stringify(each)}
-                                key={each.name}
-                              >
-                                {each.name}
-                              </SelectItem>
-                            ))}
-                          </React.Fragment>
-                        )}
-                      </React.Fragment>
-                    )}
-                    {isLoanProductError && (
-                      <p className="px-4 py-2 text-sm font-light text-destructive">
-                        An error occured while fetching loan product...
-                      </p>
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+          <SelectLoanType
+            form={form}
+            loadingLoanProduct={loadingLoanProduct}
+            loanProduct={loanProduct}
+            isLoanProductError={isLoanProductError}
           />
         )}
 
@@ -536,6 +420,21 @@ export default function LoanRequestForm({
           </React.Fragment>
         )}
 
+        {watchLoanType &&
+          JSON.parse(watchLoanType).name === 'Mortgage Loan' &&
+          watchLoanAmount && (
+            <AddDocument form={form} watchLoanAmount={watchLoanAmount} />
+          )}
+
+        {watchLoanType &&
+          JSON.parse(watchLoanType).name === 'Capital Loan' &&
+          watchLoanAmount && (
+            <AddCapitalLoanFields
+              form={form}
+              watchLoanAmount={watchLoanAmount}
+            />
+          )}
+
         {form.getValues('total') && (
           <FormField
             control={form.control}
@@ -591,134 +490,21 @@ export default function LoanRequestForm({
         />
 
         {watchRepayment === 'Self-determined' && (
-          <React.Fragment>
-            <div className="rounded-md border px-3 py-2 border-primary">
-              <p className="text-xs font-light text-primary">
-                Loan amount left:{' '}
-                {(Number(totalLoan) - Number(totalAmount)).toFixed(2)}
-              </p>
-            </div>
-            <div className="space-y-2 relative">
-              <div className="grid grid-cols-3 gap-4">
-                <FormLabel>Enter amount</FormLabel>
-                <FormLabel>Select month</FormLabel>
-              </div>
-
-              {fields.map((each, index) => (
-                <div className="grid grid-cols-5 items-center gap-4 w-full">
-                  <FormField
-                    control={form.control}
-                    name={`repayment_plan.${index}.amount`}
-                    render={({ field }) => (
-                      <FormItem className="col-span-2">
-                        <FormControl>
-                          <Input
-                            placeholder="Enter amount"
-                            className="h-10 w-full"
-                            max={(
-                              Number(totalLoan) - Number(totalAmount)
-                            ).toFixed(2)}
-                            onChange={({ target }) =>
-                              handleRepaymentChange(target.value, field, index)
-                            }
-                            value={field.value}
-                          />
-                        </FormControl>
-                        <FormMessage>
-                          {form.formState.errors.repayment_plan?.[index]?.root
-                            ?.message || ''}
-                        </FormMessage>
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* <div className="flex items-center space-x-2 w-full relative"> */}
-                  <FormField
-                    control={form.control}
-                    name={`repayment_plan.${index}.month`}
-                    render={({ field }) => (
-                      <FormItem className="w-full col-span-2">
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue
-                                  placeholder="Select loan product"
-                                  className="w-full"
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-
-                            <SelectContent className="w-full">
-                              {periodLength.map((each) => (
-                                <SelectItem
-                                  value={each.month.toString()}
-                                  key={each.month}
-                                  className="w-full"
-                                  disabled={
-                                    !!watchRePaymentPlan?.find(
-                                      (paym) => paym.month === each.month
-                                    )
-                                  }
-                                >
-                                  {each.month + ' months'}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-
-                        <FormMessage className="text-white">
-                          {form.formState.errors.repayment_plan?.[index]?.root
-                            ?.message || ''}
-                        </FormMessage>
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="col-span-0.5 flex items-center space-x-4">
-                    {fields.length > 1 && (
-                      <div role="button" className="w-[10%]">
-                        {isDeleting && each.monthId === selectedItemToDelete ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Trash2
-                            className="text-destructive"
-                            size={16}
-                            strokeWidth={1}
-                            onClick={() =>
-                              hanldeRemoveCustom(index, each.monthId || '')
-                            }
-                          />
-                        )}
-                      </div>
-                    )}
-
-                    {fields[fields.length - 1].id === each.id && (
-                      <div>
-                        {Number(customPayment?.total) !== Number(totalLoan) && (
-                          <div
-                            className="flex space-x-2 w-fit items-center justify-center text-xs text-primary right-6 bottom-[56px] rounded-full bg-[#506CC0BF] p-1.5"
-                            role="button"
-                            onClick={handleAppend}
-                          >
-                            {isPending ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Plus className="h-4 w-4" />
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </React.Fragment>
+          <SelfDeterminedForm
+            fields={fields}
+            totalLoan={totalLoan}
+            totalAmount={totalAmount}
+            form={form}
+            handleRepaymentChange={handleRepaymentChange}
+            periodLength={periodLength}
+            watchRePaymentPlan={watchRePaymentPlan}
+            customPayment={customPayment}
+            handleAppend={handleAppend}
+            isPending={isPending}
+            isDeleting={isDeleting}
+            hanldeRemoveCustom={hanldeRemoveCustom}
+            selectedItemToDelete={selectedItemToDelete}
+          />
         )}
 
         <div className="flex space-x-4">

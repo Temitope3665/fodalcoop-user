@@ -54,7 +54,6 @@ const RepayReviewForm = ({
       repaymentLog: JSON.parse(currentLoanRepayment?.amount || '{}').id,
       selectAccount: JSON.parse(currentLoanRepayment?.amount || '{}').id,
     };
-    console.log(payload);
     mutate(payload);
   };
 

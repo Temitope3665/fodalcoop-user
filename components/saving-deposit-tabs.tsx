@@ -74,15 +74,15 @@ export const SavingTableTabs = () => {
   });
 
   const records = data?.data || [];
-  const records2 = data2?.data || [];
+  const records2: any = data2 || [];
   const records3 = data3 || [];
 
-  console.log(records, 'records');
+  console.log(data2, 'records');
 
   const tabs: {
     title: string;
     value: number | string | undefined;
-    data: IStandardSavingsData[];
+    data: IStandardSavingsData[] | any;
     columns: any;
     endpoint: string;
   }[] = [

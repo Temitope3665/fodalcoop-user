@@ -18,6 +18,9 @@ import CompanyLogo from '@/assets/icons/fodal-icon.svg';
 import useStore, { defaultUser } from '@/lib/use-store';
 import { userLogoutAction } from '@/lib/actions';
 import { toast } from 'sonner';
+import { useQuery } from '@tanstack/react-query';
+import { getCompanyProfile } from '@/config/apis/profile';
+import { Avatar, AvatarImage } from '../ui/avatar';
 
 interface IMainNav {
   isOpen?: boolean;
@@ -30,6 +33,11 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
   const { user } = useStore();
   const pathname = usePathname();
   const setUser = useStore((state) => state.setUser);
+
+  const { data } = useQuery({
+    queryFn: getCompanyProfile,
+    queryKey: ['company_profile'],
+  });
 
   const handleLogout = () => {
     startTransition(async () => {
@@ -47,8 +55,17 @@ export default function MainNav({ isOpen, setIsOpen }: IMainNav) {
   return (
     <header className="flex justify-between h-[8vh] border-b border-b-[#eeeded] bg-white fixed w-full z-10 top-0">
       <div className="flex space-x-2 items-center lg:border-r lg:w-[18%] px-8">
-        <Image src={CompanyLogo} alt="company logo" width={30} height={30} />
-        <h1 className="text-pr font-semibold text-primary">Foodal</h1>
+        <Avatar>
+          <AvatarImage
+            src={data?.image_path || ''}
+            alt="company logo"
+            width={30}
+            height={30}
+          />
+        </Avatar>
+        <h1 className="text-pr font-semibold text-primary">
+          {data?.name || ''}
+        </h1>
       </div>
       <div className="flex space-x-8 font-light text-sm text-[#444444] items-center px-8">
         <div className="relative" role="button">

@@ -15,3 +15,4 @@ export const LOAN_EP: string = '/loan';
 
 // Profile
 export const PROFILE_EP: string = '/member/profile';
+export const COMPANY_PROFILE_EP: string = '/company';

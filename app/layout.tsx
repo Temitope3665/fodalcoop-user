@@ -8,6 +8,8 @@ import { AppContextProvider } from '@/context/app-context';
 import { Suspense } from 'react';
 import { Toaster } from 'sonner';
 import TanstackProvider from '@/context/tanstack-provider';
+import Image from 'next/image';
+import Animation from '@/assets/images/loading-animate.svg';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -38,7 +40,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={<Image src={Animation} alt="loading" />}>
             <TanstackProvider>
               <AppContextProvider>
                 {children}

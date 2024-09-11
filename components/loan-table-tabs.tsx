@@ -17,7 +17,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import React, { useState } from 'react';
-import LoanRequestForm from './forms/loans/loan-request-form';
+import LoanRequestForm from './forms/loans/request-form/loan-request-form';
 import GuarantorForm from './forms/loans/guarantor-form';
 import ReviewForm from './forms/loans/review-form';
 import { columns } from '@/app/(dashboard)/loans/column/loan-column';

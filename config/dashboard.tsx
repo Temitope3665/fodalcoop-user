@@ -34,31 +34,37 @@ export const dashboardConfig: DashboardConfig = {
       title: 'Dashboard',
       href: DASHBOARD_HOME_URL,
       icon: <DashboardIcon />,
+      disabled: false,
     },
     {
       title: 'Loans',
       href: LOANS_URL,
       icon: <LoanIcon />,
+      disabled: false,
     },
     {
       title: 'Savings',
       href: SAVINGS_URL,
       icon: <SavingsIcon />,
+      disabled: false,
     },
     {
       title: 'Guarantors',
       href: GUARANTOR_URL,
       icon: <GuarantorIcon />,
+      disabled: false,
     },
     {
       title: 'Marketplace',
       href: MARKET_URL,
       icon: <MarketPlaceIcon />,
+      disabled: true,
     },
     {
       title: 'Voting',
       href: VOTING_URL,
       icon: <VotingIcon />,
+      disabled: true,
     },
   ],
 };

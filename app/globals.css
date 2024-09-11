@@ -73,3 +73,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Number of lines you want to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
